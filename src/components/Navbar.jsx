@@ -1,33 +1,42 @@
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 
 function Navbar() {
-  const { user, logout } = useAuth()
+  const { logout } = useAuth()
+  const navigate = useNavigate()
+
+  const handleLogout = async () => {
+    try {
+      await logout()
+      navigate('/login')
+    } catch (error) {
+      console.error("Logout failed:", error.message)
+    }
+  }
 
   return (
-    <nav className="navbar">
-      <h1 className="logo">PeerLearn</h1>
-
-      <ul className="nav-links">
-        {user ? (
-          <>
-            <li><Link to="/dashboard">Dashboard</Link></li>
-            <li><Link to="/create-skill">Teach</Link></li>
-            <li><Link to="/book-session">Book</Link></li>
-            <li>
-              <button type="button" className="login-btn" onClick={logout}>
-                Logout
-              </button>
-            </li>
-          </>
-        ) : (
-          <>
-            <li><Link to="/login">Login</Link></li>
-            <li><Link to="/register">Register</Link></li>
-          </>
-        )}
-      </ul>
-    </nav>
+    <header className="sticky top-0 z-50 w-full border-b border-slate-800 bg-[#1e3a8a]/90 backdrop-blur-md px-6 py-4">
+      <div className="max-w-7xl mx-auto flex items-center justify-between">
+        {/* Brand Target Logo */}
+        <Link to="/dashboard" className="text-xl font-bold tracking-tight text-white hover:opacity-90 transition-opacity">
+          PeerLearn
+        </Link>
+        
+        {/* Balanced Navigation Row */}
+        <nav className="flex items-center gap-6 text-sm font-medium">
+          <Link to="/dashboard" className="text-slate-300 hover:text-white transition-colors">Dashboard</Link>
+          <Link to="/create-skill" className="text-slate-300 hover:text-white transition-colors">Teach</Link>
+          <Link to="/book-session" className="text-blue-400 hover:text-blue-300 transition-colors">Book</Link>
+          
+          <button 
+            onClick={handleLogout}
+            className="rounded-lg bg-red-600 px-4 py-2 text-xs font-semibold text-white shadow-md hover:bg-red-500 transition-all active:scale-95"
+          >
+            Logout
+          </button>
+        </nav>
+      </div>
+    </header>
   )
 }
 
