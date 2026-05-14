@@ -1,16 +1,16 @@
 import { useState } from 'react'
-import { signInWithEmailAndPassword } from 'firebase/auth'
-import { auth } from '../services/firebase'
+import { useAuth } from '../context/AuthContext'
 import { useNavigate } from 'react-router-dom'
 
 function Login() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const navigate = useNavigate()
+  const { login, loginWithGoogle } = useAuth()
 
   const handleLogin = async () => {
     try {
-      await signInWithEmailAndPassword(auth, email, password)
+      await login(email, password)
       alert('Login successful')
       navigate('/dashboard')
     } catch (error) {
