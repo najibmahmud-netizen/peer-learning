@@ -6,6 +6,7 @@ import Register from './pages/Register'
 import Dashboard from './pages/Dashboard'
 import CreateSkill from './pages/CreateSkill'
 import BookSession from './pages/BookSession'
+import ExploreSkills from './pages/ExploreSkills'
 
 /** 
  * ProtectedRoute Component:
@@ -63,6 +64,15 @@ function App() {
           {/* Fallback for 404s */}
           <Route path="*" element={<Navigate to={user ? '/dashboard' : '/login'} />} />
         </Routes>
+
+        <Route
+  path='/explore-skills'
+  element={
+    <ProtectedRoute>
+      <ExploreSkills />
+    </ProtectedRoute>
+  }
+/>
     </div>
   )
 }

@@ -9,11 +9,12 @@ function CreateSkill() {
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   const [loading, setLoading] = useState(false)
+  const [category, setCategory] = useState('')
 
   const handleSubmit = async (e) => {
     e.preventDefault()
 
-    if (!title || !description) {
+    if (!title || !description || !category) {
       alert('Please fill in all fields')
       return
     }
@@ -24,6 +25,7 @@ function CreateSkill() {
       await addDoc(collection(db, 'skills'), {
         title,
         description,
+        category,
         createdAt: new Date()
       })
 
@@ -31,6 +33,7 @@ function CreateSkill() {
 
       setTitle('')
       setDescription('')
+      setCategory('')
       navigate('/dashboard')
     } catch (error) {
       console.log(error)
@@ -80,6 +83,27 @@ function CreateSkill() {
               rows='5'
             />
           </div>
+           <div className='form-group'>
+  <label className='input-label' htmlFor='category'>
+    Category
+  </label>
+
+  <select
+    id='category'
+    value={category}
+    onChange={(e) => setCategory(e.target.value)}
+    className='input-field'
+  >
+    <option value=''>Select Category</option>
+    <option value='Web Development'>Web Development</option>
+    <option value='Mobile Development'>Mobile Development</option>
+    <option value='UI/UX Design'>UI/UX Design</option>
+    <option value='Data Science'>Data Science</option>
+    <option value='Cybersecurity'>Cybersecurity</option>
+    <option value='Languages'>Languages</option>
+  </select>
+</div>
+
 
           <button
             type='submit'
