@@ -1,7 +1,6 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
-import { AuthProvider, useAuth } from './context/AuthContext' // Missing: Logic for persistence
+import { useAuth } from './context/AuthContext'
 import Navbar from './components/Navbar'
-import Home from './pages/Home'
 import Login from './pages/Login'
 import Register from './pages/Register'
 import Dashboard from './pages/Dashboard'
@@ -14,21 +13,24 @@ import BookSession from './pages/BookSession'
  * If not, it redirects them to login, fulfilling the Auth objective.
  */
 const ProtectedRoute = ({ children }) => {
-  const { user, loading } = useAuth();
-  
-  if (loading) return <div className="flex h-screen items-center justify-center">Loading...</div>;
-  return user ? children : <Navigate to="/login" />;
-};
+  const { user, loading } = useAuth()
+
+  if (loading) return <div className="flex h-screen items-center justify-center">Loading...</div>
+  return user ? children : <Navigate to="/login" />
+}
 
 function App() {
-  return (
-    <AuthProvider> {/* Wraps the app to provide global user state without local storage */}
-      <div className="min-h-screen bg-gray-50">
-        <Navbar />
+  const { user, loading } = useAuth()
 
-        <Routes>
+  if (loading) return <div className="flex h-screen items-center justify-center">Loading...</div>
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      {user && <Navbar />}
+
+      <Routes>
           {/* Public Routes */}
-          <Route path='/' element={<Home />} />
+          <Route path='/' element={<Navigate to="/login" />} />
           <Route path='/login' element={<Login />} />
           <Route path='/register' element={<Register />} />
 
@@ -59,10 +61,9 @@ function App() {
           />
           
           {/* Fallback for 404s */}
-          <Route path="*" element={<Navigate to="/" />} />
+          <Route path="*" element={<Navigate to={user ? '/dashboard' : '/login'} />} />
         </Routes>
-      </div>
-    </AuthProvider>
+    </div>
   )
 }
 
