@@ -4,9 +4,11 @@ import { collection, getDocs } from 'firebase/firestore'
 import { db } from '../services/firebase'
 import heroImage from '../assets/hero.png'
 
+
 function Dashboard() {
   const [skills, setSkills] = useState([])
   const [sessions, setSessions] = useState([])
+  const navigate = useNavigate()
 
   useEffect(() => {
     const fetchData = async () => {
