@@ -1,80 +1,138 @@
-import heroImage from '../assets/hero.png'
+import { Link } from 'react-router-dom'
+import { BookOpen, Users, Zap, ArrowRight, Star, CheckCircle } from 'lucide-react'
 
-function Home() {
+export default function Home() {
+  const features = [
+    {
+      icon: BookOpen,
+      title: 'Learn New Skills',
+      desc: 'Access a curated library of skills taught by your peers at Moringa School.',
+    },
+    {
+      icon: Users,
+      title: 'Peer Tutoring',
+      desc: 'Connect directly with students who have mastered the topics you want to learn.',
+    },
+    {
+      icon: Zap,
+      title: 'Fast Booking',
+      desc: 'Book tutoring sessions in seconds with our streamlined scheduling system.',
+    },
+  ]
+
+  const stats = [
+    { value: '150+', label: 'Active Skills' },
+    { value: '80+', label: 'Peer Tutors' },
+    { value: '500+', label: 'Sessions Held' },
+    { value: '4.8', label: 'Avg Rating', icon: Star },
+  ]
+
   return (
-    <div className="min-h-screen flex flex-col items-center p-6 bg-gray-50">
-
-      {/* HERO SECTION */}
-      <div className="max-w-6xl w-full grid gap-12 lg:grid-cols-[1.2fr_1fr] items-center mt-20">
-        <div className="lg:text-left text-center">
-          <h1 className="text-5xl font-bold text-blue-700 mb-4">
-            Peer Learning Platform
-          </h1>
-
-          <p className="text-gray-700 text-lg mb-6">
-            A community-driven platform where students teach, learn, and grow together.
-            Share your skills, discover new knowledge, and book learning sessions with peers.
-          </p>
-
-          <div className="flex flex-col sm:flex-row justify-center lg:justify-start gap-4">
-            <a
-              href="/register"
-              className="bg-blue-600 text-white px-6 py-3 rounded hover:bg-blue-700"
-            >
-              Get Started
-            </a>
-
-            <a
-              href="/login"
-              className="border border-blue-600 text-blue-600 px-6 py-3 rounded hover:bg-blue-100"
-            >
-              Login
-            </a>
+    <div>
+      {/* Hero Section */}
+      <section className="relative bg-gradient-to-br from-primary-900 via-primary-800 to-primary-700 text-white overflow-hidden">
+        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10" />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-28 relative">
+          <div className="max-w-3xl">
+            <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/10 backdrop-blur rounded-full text-sm font-medium mb-6">
+              <Zap className="w-4 h-4 text-primary-300" />
+              Moringa School — Module 3 Project
+            </div>
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight mb-6">
+              Learn Together.<br />
+              <span className="text-primary-300">Grow Together.</span>
+            </h1>
+            <p className="text-lg sm:text-xl text-primary-100 mb-8 leading-relaxed max-w-2xl">
+              A peer-to-peer learning platform where Moringa students teach and learn from each other. 
+              Share your expertise, book sessions, and accelerate your growth.
+            </p>
+            <div className="flex flex-wrap gap-4">
+              <Link
+                to="/explore"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-white text-primary-700 rounded-xl font-semibold hover:bg-primary-50 transition-colors"
+              >
+                Explore Skills
+                <ArrowRight className="w-5 h-5" />
+              </Link>
+              <Link
+                to="/login"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-primary-700/50 text-white border border-primary-400/30 rounded-xl font-semibold hover:bg-primary-700/70 transition-colors"
+              >
+                Get Started
+              </Link>
+            </div>
           </div>
         </div>
+      </section>
 
-        <div className="flex justify-center lg:justify-end">
-          <img
-            src={heroImage}
-            alt="Students learning together"
-            className="w-full max-w-md rounded-3xl shadow-2xl border border-white/70"
-          />
+      {/* Stats */}
+      <section className="bg-white border-b border-gray-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            {stats.map((stat, i) => (
+              <div key={i} className="text-center">
+                <div className="flex items-center justify-center gap-1 text-3xl font-bold text-gray-900">
+                  {stat.value}
+                  {stat.icon && <stat.icon className="w-5 h-5 text-yellow-500 fill-yellow-500" />}
+                </div>
+                <p className="text-sm text-gray-500 mt-1">{stat.label}</p>
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
+      </section>
 
-      {/* FEATURES SECTION */}
-      <div className="grid md:grid-cols-3 gap-6 mt-16 max-w-5xl w-full">
+      {/* Features */}
+      <section className="py-20 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">How It Works</h2>
+            <p className="text-gray-600 max-w-2xl mx-auto">
+              Our platform makes it easy to share knowledge and book learning sessions with fellow students.
+            </p>
+          </div>
+          <div className="grid md:grid-cols-3 gap-8">
+            {features.map((f, i) => (
+              <div key={i} className="card p-8 text-center">
+                <div className="w-14 h-14 bg-primary-100 rounded-xl flex items-center justify-center mx-auto mb-6">
+                  <f.icon className="w-7 h-7 text-primary-600" />
+                </div>
+                <h3 className="text-xl font-semibold text-gray-900 mb-3">{f.title}</h3>
+                <p className="text-gray-600 leading-relaxed">{f.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
 
-        <div className="bg-white p-6 rounded shadow">
-          <h2 className="text-xl font-bold mb-2">Learn Skills</h2>
-          <p className="text-gray-600">
-            Browse skills shared by other students and learn at your own pace.
+      {/* CTA */}
+      <section className="py-20 bg-primary-600">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="text-3xl font-bold text-white mb-4">Ready to start learning?</h2>
+          <p className="text-primary-100 text-lg mb-8">
+            Join hundreds of Moringa students already sharing knowledge on the platform.
           </p>
+          <div className="flex flex-wrap justify-center gap-4">
+            <Link
+              to="/login"
+              className="px-8 py-3 bg-white text-primary-700 rounded-xl font-semibold hover:bg-primary-50 transition-colors"
+            >
+              Sign Up Now
+            </Link>
+            <Link
+              to="/explore"
+              className="px-8 py-3 bg-primary-700 text-white border border-primary-500 rounded-xl font-semibold hover:bg-primary-800 transition-colors"
+            >
+              Browse Skills
+            </Link>
+          </div>
+          <div className="mt-8 flex justify-center gap-6 text-sm text-primary-200">
+            <span className="flex items-center gap-1"><CheckCircle className="w-4 h-4" /> Free to join</span>
+            <span className="flex items-center gap-1"><CheckCircle className="w-4 h-4" /> Peer verified</span>
+            <span className="flex items-center gap-1"><CheckCircle className="w-4 h-4" /> Instant booking</span>
+          </div>
         </div>
-
-        <div className="bg-white p-6 rounded shadow">
-          <h2 className="text-xl font-bold mb-2"> Teach Others</h2>
-          <p className="text-gray-600">
-            Post the skills you know and help other students grow.
-          </p>
-        </div>
-
-        <div className="bg-white p-6 rounded shadow">
-          <h2 className="text-xl font-bold mb-2"> Book Sessions</h2>
-          <p className="text-gray-600">
-            Schedule one-on-one or group learning sessions easily.
-          </p>
-        </div>
-
-      </div>
-
-      {/* FOOTER NOTE */}
-      <p className="text-sm text-gray-500 mt-16">
-        Built for student peer learning and collaboration 
-      </p>
-
+      </section>
     </div>
   )
 }
-
-export default Home
