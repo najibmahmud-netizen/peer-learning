@@ -107,8 +107,10 @@ export default function SkillDetails() {
       </button>
 
       <div className="grid lg:grid-cols-3 gap-8">
-        {/* Main Content */}
+
+        {/* MAIN CONTENT */}
         <div className="lg:col-span-2">
+
           <div className="rounded-2xl overflow-hidden mb-6">
             <img
               src={skill.image}
@@ -133,15 +135,17 @@ export default function SkillDetails() {
           <h1 className="text-3xl font-bold text-gray-900 mb-4">{skill.title}</h1>
 
           <div className="flex items-center gap-4 mb-6 pb-6 border-b border-gray-200">
-            <img
-              src={skill.tutorPicture}
-              alt={skill.tutorName}
-              className="w-12 h-12 rounded-full object-cover"
-            />
+
+            {/* PROFILE PHOTO REMOVED */}
+            <div className="w-12 h-12 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold">
+              {skill.tutorName?.charAt(0).toUpperCase()}
+            </div>
+
             <div>
               <p className="font-semibold text-gray-900">{skill.tutorName}</p>
               <p className="text-sm text-gray-500">Tutor</p>
             </div>
+
             <div className="ml-auto flex items-center gap-1 text-yellow-500">
               <Star className="w-5 h-5 fill-yellow-500" />
               <span className="font-semibold text-gray-900">4.8</span>
@@ -167,10 +171,11 @@ export default function SkillDetails() {
           </div>
         </div>
 
-        {/* Sidebar */}
+        {/* SIDEBAR (UNCHANGED) */}
         <div className="lg:col-span-1">
           <div className="sticky top-24">
             <div className="card p-6">
+
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-baseline gap-1">
                   <span className="text-3xl font-bold text-gray-900">${skill.price}</span>
@@ -210,17 +215,15 @@ export default function SkillDetails() {
               </button>
 
               {message && (
-                <div
-                  className={`mt-4 p-3 rounded-lg text-sm flex items-start gap-2 ${
-                    message.includes('success')
-                      ? 'bg-green-50 text-green-700'
-                      : 'bg-red-50 text-red-700'
-                  }`}
-                >
+                <div className={`mt-4 p-3 rounded-lg text-sm flex items-start gap-2 ${
+                  message.includes('success')
+                    ? 'bg-green-50 text-green-700'
+                    : 'bg-red-50 text-red-700'
+                }`}>
                   {message.includes('success') ? (
-                    <CheckCircle className="w-4 h-4 flex-shrink-0 mt-0.5" />
+                    <CheckCircle className="w-4 h-4" />
                   ) : (
-                    <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5" />
+                    <AlertCircle className="w-4 h-4" />
                   )}
                   {message}
                 </div>
@@ -231,9 +234,11 @@ export default function SkillDetails() {
                   You need to sign in to request a session.
                 </p>
               )}
+
             </div>
           </div>
         </div>
+
       </div>
     </div>
   )

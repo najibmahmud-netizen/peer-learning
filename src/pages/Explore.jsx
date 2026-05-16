@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { Search, Filter, Star, Clock, User, ArrowRight } from 'lucide-react'
+import { Search, Filter } from 'lucide-react'
 
 const API_URL = 'http://localhost:3000'
 
@@ -44,13 +44,12 @@ export default function Explore() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-    
+
       <div className="mb-10">
         <h1 className="text-3xl font-bold text-gray-900 mb-2">Explore Skills</h1>
         <p className="text-gray-600">Discover what your peers are teaching and book a session today.</p>
       </div>
 
-     
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 mb-8">
         <div className="flex flex-col md:flex-row gap-4">
           <div className="relative flex-grow">
@@ -63,6 +62,7 @@ export default function Explore() {
               className="input-field pl-10"
             />
           </div>
+
           <div className="flex items-center gap-2 overflow-x-auto pb-1 md:pb-0">
             <Filter className="w-5 h-5 text-gray-400 flex-shrink-0" />
             {categories.map((cat) => (
@@ -82,14 +82,12 @@ export default function Explore() {
         </div>
       </div>
 
-    
       <p className="text-sm text-gray-500 mb-6">
         Showing {filteredSkills.length} {filteredSkills.length === 1 ? 'skill' : 'skills'}
         {selectedCategory !== 'All' && ` in ${selectedCategory}`}
         {searchTerm && ` matching "${searchTerm}"`}
       </p>
 
-   
       {filteredSkills.length === 0 ? (
         <div className="text-center py-20">
           <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -125,20 +123,19 @@ export default function Explore() {
                   </span>
                 </div>
               </div>
+
               <div className="p-5">
                 <h3 className="text-lg font-semibold text-gray-900 mb-2 group-hover:text-primary-600 transition-colors">
                   {skill.title}
                 </h3>
                 <p className="text-gray-600 text-sm line-clamp-2 mb-4">{skill.description}</p>
+
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <img
-                      src={skill.tutorPicture}
-                      alt={skill.tutorName}
-                      className="w-7 h-7 rounded-full object-cover"
-                    />
-                    <span className="text-sm text-gray-700">{skill.tutorName}</span>
-                  </div>
+                  {/* PROFILE PHOTO REMOVED */}
+                  <span className="text-sm text-gray-700 font-medium">
+                    {skill.tutorName}
+                  </span>
+
                   <div className="flex items-center gap-1 text-primary-600 font-semibold">
                     <span className="text-sm">${skill.price}</span>
                     <span className="text-xs text-gray-400">/hr</span>
