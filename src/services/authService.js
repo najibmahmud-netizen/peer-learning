@@ -1,17 +1,11 @@
-/**
- * Authentication Service
- * Handles all authentication-related API calls and logic
- */
 
 const API_URL = 'http://localhost:3000'
 
-/**
- * Sign up with email and password
- */
+
 export const signUpWithEmail = async (userData) => {
   const { name, email, password } = userData
 
-  // Check if email already exists
+  
   const existingEmail = await fetch(`${API_URL}/users?email=${email}`)
   const existing = await existingEmail.json()
 
@@ -23,7 +17,7 @@ export const signUpWithEmail = async (userData) => {
     id: `email_${Date.now()}`,
     name,
     email,
-    password, // In production, should be hashed on backend
+    password, 
     picture: null,
     authMethod: 'email',
     createdAt: new Date().toISOString(),
@@ -42,9 +36,7 @@ export const signUpWithEmail = async (userData) => {
   return newUser
 }
 
-/**
- * Sign in with email and password
- */
+
 export const signInWithEmail = async (email, password) => {
   const response = await fetch(`${API_URL}/users?email=${email}`)
   const users = await response.json()
@@ -56,9 +48,7 @@ export const signInWithEmail = async (email, password) => {
   return users[0]
 }
 
-/**
- * Sign in with Google
- */
+
 export const signInWithGoogle = async (userData) => {
   const googleUser = {
     id: userData.id,
@@ -68,12 +58,13 @@ export const signInWithGoogle = async (userData) => {
     authMethod: 'google',
   }
 
-  // Check if user exists
+  
+  
   const res = await fetch(`${API_URL}/users?id=${googleUser.id}`)
   const existing = await res.json()
 
   if (existing.length === 0) {
-    // Create new user
+    
     const response = await fetch(`${API_URL}/users`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -88,9 +79,7 @@ export const signInWithGoogle = async (userData) => {
   return existing.length > 0 ? existing[0] : googleUser
 }
 
-/**
- * Get user by ID
- */
+
 export const getUser = async (id) => {
   const response = await fetch(`${API_URL}/users/${id}`)
   if (!response.ok) {
@@ -99,9 +88,7 @@ export const getUser = async (id) => {
   return response.json()
 }
 
-/**
- * Update user profile
- */
+
 export const updateUserProfile = async (userId, updates) => {
   const response = await fetch(`${API_URL}/users/${userId}`, {
     method: 'PATCH',
@@ -116,18 +103,14 @@ export const updateUserProfile = async (userId, updates) => {
   return response.json()
 }
 
-/**
- * Check if user email exists
- */
+
 export const checkEmailExists = async (email) => {
   const response = await fetch(`${API_URL}/users?email=${email}`)
   const users = await response.json()
   return users.length > 0
 }
 
-/**
- * Verify credentials (for local auth)
- */
+
 export const verifyCredentials = async (email, password) => {
   try {
     const user = await signInWithEmail(email, password)

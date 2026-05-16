@@ -24,18 +24,18 @@ export default function Home() {
     { value: '150+', label: 'Active Skills' },
     { value: '80+', label: 'Peer Tutors' },
     { value: '500+', label: 'Sessions Held' },
-    { value: '4.8', label: 'Avg Rating', icon: Star },
+    { value: '4.8', label: 'Avg Rating',  },
   ]
 
   return (
     <div>
-      {/* Hero Section */}
+      
       <section className="relative bg-gradient-to-br from-primary-900 via-primary-800 to-primary-700 text-white overflow-hidden">
         <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10" />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-28 relative">
           <div className="max-w-3xl">
             <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/10 backdrop-blur rounded-full text-sm font-medium mb-6">
-              <Zap className="w-4 h-4 text-primary-300" />
+              
               Moringa School — Module 3 Project
             </div>
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight mb-6">
@@ -65,7 +65,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Stats */}
+      
       <section className="bg-white border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
@@ -82,7 +82,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Features */}
+      
       <section className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
@@ -105,7 +105,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* CTA */}
+      
       <section className="py-20 bg-primary-600">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl font-bold text-white mb-4">Ready to start learning?</h2>
@@ -126,11 +126,7 @@ export default function Home() {
               Browse Skills
             </Link>
           </div>
-          <div className="mt-8 flex justify-center gap-6 text-sm text-primary-200">
-            <span className="flex items-center gap-1"><CheckCircle className="w-4 h-4" /> Free to join</span>
-            <span className="flex items-center gap-1"><CheckCircle className="w-4 h-4" /> Peer verified</span>
-            <span className="flex items-center gap-1"><CheckCircle className="w-4 h-4" /> Instant booking</span>
-          </div>
+          
         </div>
       </section>
     </div>

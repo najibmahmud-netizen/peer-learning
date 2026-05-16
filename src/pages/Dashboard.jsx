@@ -90,7 +90,7 @@ export default function Dashboard() {
     }
   }
 
-  // ─── DELETE ───
+  
   const handleDelete = async (skillId) => {
     if (!window.confirm('Are you sure you want to delete this skill?')) return
 
@@ -104,7 +104,7 @@ export default function Dashboard() {
     }
   }
 
-  // ─── UPDATE AVAILABILITY (PATCH) ───
+  
   const toggleAvailability = async (skill) => {
     const newStatus = skill.availability === 'open' ? 'closed' : 'open'
     try {
@@ -122,7 +122,7 @@ export default function Dashboard() {
     }
   }
 
-  // ─── EDIT (PATCH full update) ───
+  
   const handleEdit = async (e) => {
     e.preventDefault()
     setFormError('')
@@ -187,7 +187,7 @@ export default function Dashboard() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-      {/* Header */}
+      
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">My Dashboard</h1>
@@ -199,7 +199,7 @@ export default function Dashboard() {
         </button>
       </div>
 
-      {/* Tabs */}
+      
       <div className="flex gap-1 bg-gray-100 p-1 rounded-xl mb-8 w-fit">
         <button
           onClick={() => setActiveTab('teaching')}
@@ -223,7 +223,7 @@ export default function Dashboard() {
         </button>
       </div>
 
-      {/* ─── SKILLS I TEACH ─── */}
+      
       {activeTab === 'teaching' && (
         <div>
           {mySkills.length === 0 ? (
@@ -290,7 +290,7 @@ export default function Dashboard() {
         </div>
       )}
 
-      {/* ─── SESSIONS BOOKED ─── */}
+      
       {activeTab === 'booked' && (
         <div>
           {mySessions.length === 0 ? (
@@ -347,7 +347,7 @@ export default function Dashboard() {
         </div>
       )}
 
-      {/* ─── MODAL: CREATE / EDIT SKILL ─── */}
+      
       {showForm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
           <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto">

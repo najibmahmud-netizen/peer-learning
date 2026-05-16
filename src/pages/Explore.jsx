@@ -44,13 +44,13 @@ export default function Explore() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-      {/* Header */}
+    
       <div className="mb-10">
         <h1 className="text-3xl font-bold text-gray-900 mb-2">Explore Skills</h1>
         <p className="text-gray-600">Discover what your peers are teaching and book a session today.</p>
       </div>
 
-      {/* Search & Filter */}
+     
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 mb-8">
         <div className="flex flex-col md:flex-row gap-4">
           <div className="relative flex-grow">
@@ -82,14 +82,14 @@ export default function Explore() {
         </div>
       </div>
 
-      {/* Results Count */}
+    
       <p className="text-sm text-gray-500 mb-6">
         Showing {filteredSkills.length} {filteredSkills.length === 1 ? 'skill' : 'skills'}
         {selectedCategory !== 'All' && ` in ${selectedCategory}`}
         {searchTerm && ` matching "${searchTerm}"`}
       </p>
 
-      {/* Grid */}
+   
       {filteredSkills.length === 0 ? (
         <div className="text-center py-20">
           <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">

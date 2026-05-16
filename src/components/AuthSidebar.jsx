@@ -1,7 +1,4 @@
-/**
- * AuthFeatures Component
- * Displays feature list for authentication sidebar
- */
+
 
 export function AuthFeatures({ features }) {
   return (
@@ -21,16 +18,13 @@ export function AuthFeatures({ features }) {
   )
 }
 
-/**
- * AuthSidebar Component
- * Reusable sidebar for authentication pages
- */
+
 export function AuthSidebar({ title, subtitle, features, children }) {
   return (
     <div className="hidden md:flex bg-gradient-to-br from-blue-600 to-blue-800 p-12 text-white flex-col justify-center">
       <div className="mb-10">
         <div className="w-14 h-14 bg-white/20 rounded-xl flex items-center justify-center mb-6 backdrop-blur">
-          {children ? children : <div className="text-2xl">📚</div>}
+          {children ? children : <div className="text-2xl"></div>}
         </div>
         <h2 className="text-3xl font-bold mb-4">{title}</h2>
         <p className="text-blue-100 leading-relaxed text-lg">{subtitle}</p>
@@ -38,7 +32,7 @@ export function AuthSidebar({ title, subtitle, features, children }) {
 
       {features && <AuthFeatures features={features} />}
 
-      {/* Bottom accent */}
+      
       <div className="mt-12 pt-8 border-t border-white/10">
         <p className="text-blue-100 text-sm">
           Join thousands of Moringa students taking control of their learning journey

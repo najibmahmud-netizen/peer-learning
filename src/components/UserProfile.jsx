@@ -1,7 +1,4 @@
-/**
- * User Profile Component
- * Displays and allows editing of user profile information
- */
+
 
 import { useState } from 'react'
 import { User, Mail, Phone, MapPin, Calendar, Edit2, Save, X } from 'lucide-react'
@@ -83,7 +80,7 @@ export default function UserProfile() {
 
   return (
     <div className="max-w-2xl mx-auto bg-white rounded-2xl shadow-lg overflow-hidden">
-      {/* Header */}
+      
       <div className="bg-gradient-to-r from-blue-600 to-blue-800 px-6 md:px-8 py-8 text-white">
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-4">
@@ -116,13 +113,13 @@ export default function UserProfile() {
         </div>
       </div>
 
-      {/* Content */}
+      
       <div className="p-6 md:p-8">
         {error && <AuthAlert type="error" message={error} onClose={() => setError('')} />}
         {successMessage && <AuthAlert type="success" message={successMessage} />}
 
         {isEditing ? (
-          // Edit Form
+        
           <form onSubmit={handleSaveProfile} className="space-y-6">
             <div className="grid md:grid-cols-2 gap-6">
               <AuthInput
@@ -208,7 +205,7 @@ export default function UserProfile() {
             </div>
           </form>
         ) : (
-          // View Mode
+          
           <div className="space-y-6">
             <div className="grid md:grid-cols-2 gap-6">
               <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-lg">

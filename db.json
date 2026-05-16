@@ -1,0 +1,161 @@
+{
+  "users": [
+    {
+      "id": "google_123",
+      "name": "Alice Johnson",
+      "email": "alice@example.com",
+      "picture": "https://i.pravatar.cc/150?u=alice",
+      "role": "student"
+    },
+    {
+      "id": "google_456",
+      "name": "Bob Smith",
+      "email": "bob@example.com",
+      "picture": "https://i.pravatar.cc/150?u=bob",
+      "role": "tutor"
+    },
+    {
+      "id": "4oC_huG4fxw",
+      "name": "emmanuel torris",
+      "email": "torrisemanuel@gmail.com",
+      "password": "3549Manu",
+      "picture": null,
+      "authMethod": "email",
+      "createdAt": "2026-05-15T13:38:50.850Z"
+    },
+    {
+      "id": "7OGY55Q0_JM",
+      "name": "Najib Mahmud",
+      "email": "najib.mahmud@student.moringaschool.com",
+      "password": "Najib@806",
+      "picture": null,
+      "authMethod": "email",
+      "createdAt": "2026-05-15T13:58:55.248Z"
+    }
+  ],
+  "skills": [
+    {
+      "id": "1",
+      "title": "React Fundamentals",
+      "category": "Frontend",
+      "description": "Learn React hooks, components, and state management from scratch.",
+      "tutorId": "google_456",
+      "tutorName": "Bob Smith",
+      "tutorPicture": "https://i.pravatar.cc/150?u=bob",
+      "price": 25,
+      "availability": "open",
+      "image": "https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=800&q=80"
+    },
+    {
+      "id": "2",
+      "title": "Python for Data Science",
+      "category": "Data Science",
+      "description": "Master pandas, numpy, and matplotlib for data analysis.",
+      "tutorId": "google_456",
+      "tutorName": "Bob Smith",
+      "tutorPicture": "https://i.pravatar.cc/150?u=bob",
+      "price": 30,
+      "availability": "open",
+      "image": "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=800&q=80"
+    },
+    {
+      "id": "3",
+      "title": "UI/UX Design Principles",
+      "category": "Design",
+      "description": "Learn color theory, typography, and Figma prototyping.",
+      "tutorId": "google_123",
+      "tutorName": "Alice Johnson",
+      "tutorPicture": "https://i.pravatar.cc/150?u=alice",
+      "price": 20,
+      "availability": "closed",
+      "image": "https://images.unsplash.com/photo-1561070791-2526d30994b5?w=800&q=80"
+    },
+    {
+      "id": "4",
+      "title": "Node.js & Express",
+      "category": "Backend",
+      "description": "Build RESTful APIs and server-side applications with Node.js.",
+      "tutorId": "google_456",
+      "tutorName": "Bob Smith",
+      "tutorPicture": "https://i.pravatar.cc/150?u=bob",
+      "price": 28,
+      "availability": "open",
+      "image": "https://images.unsplash.com/photo-1627398242454-45a1465c2479?w=800&q=80"
+    },
+    {
+      "id": "5",
+      "title": "Machine Learning Basics",
+      "category": "AI/ML",
+      "description": "Introduction to supervised and unsupervised learning algorithms.",
+      "tutorId": "google_123",
+      "tutorName": "Alice Johnson",
+      "tutorPicture": "https://i.pravatar.cc/150?u=alice",
+      "price": 35,
+      "availability": "open",
+      "image": "https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?w=800&q=80"
+    },
+    {
+      "title": "Javascript",
+      "category": "Frontend",
+      "description": "90% sure",
+      "price": 12,
+      "availability": "open",
+      "image": "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=800&q=80",
+      "tutorId": "4oC_huG4fxw",
+      "tutorName": "emmanuel torris",
+      "tutorPicture": null,
+      "id": "Ov3qAqvYHLo"
+    },
+    {
+      "title": "Python",
+      "category": "Backend",
+      "description": "its good",
+      "price": 24,
+      "availability": "open",
+      "image": "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=800&q=80",
+      "tutorId": "7OGY55Q0_JM",
+      "tutorName": "Najib Mahmud",
+      "tutorPicture": null,
+      "id": "HygzyeEGVZM"
+    },
+    {
+      "title": "Javascript",
+      "category": "Frontend",
+      "description": "hard",
+      "price": 30,
+      "availability": "open",
+      "image": "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=800&q=80",
+      "tutorId": "7OGY55Q0_JM",
+      "tutorName": "Najib Mahmud",
+      "tutorPicture": null,
+      "id": "eEs7fxEpldA"
+    }
+  ],
+  "sessions": [
+    {
+      "id": "s1",
+      "skillId": "1",
+      "skillTitle": "React Fundamentals",
+      "tutorId": "google_456",
+      "tutorName": "Bob Smith",
+      "studentId": "google_123",
+      "studentName": "Alice Johnson",
+      "status": "confirmed",
+      "date": "2026-05-20",
+      "time": "14:00"
+    },
+    {
+      "id": "s2",
+      "skillId": "3",
+      "skillTitle": "UI/UX Design Principles",
+      "tutorId": "google_123",
+      "tutorName": "Alice Johnson",
+      "studentId": "google_456",
+      "studentName": "Bob Smith",
+      "status": "pending",
+      "date": "2026-05-22",
+      "time": "10:00"
+    }
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
+}

@@ -6,7 +6,7 @@ export default function Footer() {
     <footer className="bg-gray-900 text-gray-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          {/* Brand */}
+        
           <div className="md:col-span-1">
             <Link to="/" className="flex items-center gap-2 mb-4">
               <div className="w-8 h-8 bg-primary-600 rounded-lg flex items-center justify-center">
@@ -21,7 +21,7 @@ export default function Footer() {
             </p>
           </div>
 
-          {/* Quick Links */}
+          
           <div>
             <h3 className="text-white font-semibold mb-4">Platform</h3>
             <ul className="space-y-2 text-sm">
@@ -31,17 +31,10 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Resources */}
-          <div>
-            <h3 className="text-white font-semibold mb-4">Resources</h3>
-            <ul className="space-y-2 text-sm">
-              <li><span className="hover:text-white transition-colors cursor-pointer">Help Center</span></li>
-              <li><span className="hover:text-white transition-colors cursor-pointer">Community Guidelines</span></li>
-              <li><span className="hover:text-white transition-colors cursor-pointer">Become a Tutor</span></li>
-            </ul>
-          </div>
+          
+          
 
-          {/* Contact */}
+          
           <div>
             <h3 className="text-white font-semibold mb-4">Connect</h3>
             <div className="flex gap-4">

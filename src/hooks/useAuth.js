@@ -1,8 +1,4 @@
-/**
- * useAuth Hook
- * Custom hook for authentication-related functionality
- * Extends the UserContext with additional auth methods
- */
+
 
 import { useState } from 'react'
 import { useUser } from '../context/UserContext'
@@ -19,9 +15,7 @@ export const useAuth = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState(null)
 
-  /**
-   * Sign up with email and password
-   */
+  
   const signUp = async (name, email, password) => {
     setIsLoading(true)
     setError(null)
@@ -38,9 +32,7 @@ export const useAuth = () => {
     }
   }
 
-  /**
-   * Sign in with email and password
-   */
+  
   const signIn = async (email, password) => {
     setIsLoading(true)
     setError(null)
@@ -57,9 +49,7 @@ export const useAuth = () => {
     }
   }
 
-  /**
-   * Sign in with Google
-   */
+  
   const signInGoogle = async (googleData) => {
     setIsLoading(true)
     setError(null)
@@ -76,9 +66,7 @@ export const useAuth = () => {
     }
   }
 
-  /**
-   * Check if email exists
-   */
+  
   const emailExists = async (email) => {
     try {
       return await checkEmailExists(email)
@@ -88,9 +76,7 @@ export const useAuth = () => {
     }
   }
 
-  /**
-   * Update user profile
-   */
+  
   const updateProfile = async (updates) => {
     setIsLoading(true)
     setError(null)
@@ -107,22 +93,20 @@ export const useAuth = () => {
     }
   }
 
-  /**
-   * Sign out
-   */
+  
   const signOut = () => {
     setError(null)
     logout()
   }
 
   return {
-    // State
+    
     user,
     isAuthenticated,
     isLoading,
     error,
 
-    // Methods
+    
     signUp,
     signIn,
     signInGoogle,
@@ -130,7 +114,7 @@ export const useAuth = () => {
     emailExists,
     updateProfile,
 
-    // Utilities
+    
     clearError: () => setError(null),
   }
 }

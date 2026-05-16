@@ -1,7 +1,4 @@
-/**
- * Reusable Authentication Input Component
- * Handles validation display and error states
- */
+
 
 import { Eye, EyeOff, Check, X } from 'lucide-react'
 import { useState } from 'react'
@@ -17,7 +14,7 @@ export function AuthInput({
   disabled = false,
   hint = null,
   icon: Icon = null,
-  passwordStrength = null, // For password fields: { isValid, feedback }
+  passwordStrength = null, 
 }) {
   const [showPassword, setShowPassword] = useState(false)
   const isPasswordField = type === 'password'
@@ -58,13 +55,13 @@ export function AuthInput({
         )}
       </div>
 
-      {/* Error message */}
+      
       {error && <p className="text-red-600 text-sm mt-2">{error}</p>}
 
-      {/* Hint text */}
+      
       {hint && !error && <p className="text-gray-500 text-sm mt-2">{hint}</p>}
 
-      {/* Password strength indicator */}
+      
       {passwordStrength && value && (
         <div className="mt-3 space-y-2">
           <div className="text-xs font-medium text-gray-600">Password requirements:</div>
@@ -108,10 +105,7 @@ export function AuthInput({
   )
 }
 
-/**
- * Authentication Alert Component
- * For displaying errors and success messages
- */
+
 export function AuthAlert({ type = 'error', message, onClose }) {
   const isError = type === 'error'
 
@@ -146,10 +140,7 @@ export function AuthAlert({ type = 'error', message, onClose }) {
   )
 }
 
-/**
- * Authentication Form Container
- * Provides consistent styling for auth forms
- */
+
 export function AuthFormContainer({
   children,
   title,
@@ -187,9 +178,9 @@ export function AuthFormContainer({
   )
 }
 
-/**
- * Social Login Button Component
- */
+
+ 
+ 
 export function SocialLoginButton({ provider = 'google', icon: Icon, onClick, isLoading = false }) {
   const providerNames = {
     google: 'Continue with Google',

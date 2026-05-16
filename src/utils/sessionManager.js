@@ -1,15 +1,9 @@
-/**
- * Session Management Utility
- * Handles user sessions, tokens, and local storage
- */
 
 const SESSION_KEY = 'moringa_session'
 const TOKEN_KEY = 'moringa_token'
 const USER_KEY = 'moringa_user'
 
-/**
- * Create and store a session
- */
+
 export const createSession = (user, token = null) => {
   const session = {
     user,
@@ -27,9 +21,7 @@ export const createSession = (user, token = null) => {
   return session
 }
 
-/**
- * Get current session
- */
+
 export const getSession = () => {
   try {
     const session = localStorage.getItem(SESSION_KEY)
@@ -40,16 +32,12 @@ export const getSession = () => {
   }
 }
 
-/**
- * Get session token
- */
+
 export const getSessionToken = () => {
   return localStorage.getItem(TOKEN_KEY)
 }
 
-/**
- * Check if session is valid and not expired
- */
+
 export const isSessionValid = () => {
   const session = getSession()
   if (!session) return false
@@ -62,34 +50,26 @@ export const isSessionValid = () => {
   return true
 }
 
-/**
- * Clear session
- */
+
 export const clearSession = () => {
   localStorage.removeItem(SESSION_KEY)
   localStorage.removeItem(TOKEN_KEY)
   localStorage.removeItem(USER_KEY)
 }
 
-/**
- * Refresh session
- */
+
 export const refreshSession = (user, token = null) => {
   clearSession()
   return createSession(user, token)
 }
 
-/**
- * Get user from session
- */
+
 export const getSessionUser = () => {
   const session = getSession()
   return session?.user || null
 }
 
-/**
- * Add authorization header to fetch requests
- */
+
 export const getAuthHeaders = (additionalHeaders = {}) => {
   const token = getSessionToken()
   const headers = {
@@ -104,9 +84,7 @@ export const getAuthHeaders = (additionalHeaders = {}) => {
   return headers
 }
 
-/**
- * Authenticated fetch wrapper
- */
+
 export const authenticatedFetch = async (url, options = {}) => {
   const headers = getAuthHeaders(options.headers)
 
@@ -115,7 +93,7 @@ export const authenticatedFetch = async (url, options = {}) => {
     headers,
   })
 
-  // Handle 401 unauthorized
+  
   if (response.status === 401) {
     clearSession()
     window.location.href = '/login'
