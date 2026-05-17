@@ -1,286 +1,184 @@
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useUser } from '../context/UserContext'
-import {
-  BookOpen, Plus, Trash2, Edit3, CheckCircle, XCircle, Clock,
-  Calendar, User, AlertCircle, X, Save, Loader2
-} from 'lucide-react'
-
-const API_URL = 'http://localhost:3000'
+import { fetchAllSkills, createSkill } from "../services/skillService"
+import { getBookings } from '../utils/sessionManager' // Import memory tracker
 
 export default function Dashboard() {
   const { user } = useUser()
-  const [activeTab, setActiveTab] = useState('teaching')
   const [mySkills, setMySkills] = useState([])
-  const [mySessions, setMySessions] = useState([])
+  const [myBookings, setMyBookings] = useState([]) // New state for dynamic bookings tracking
   const [loading, setLoading] = useState(true)
+  const [activeTab, setActiveTab] = useState('teach')
+  
+  // Keep your existing Form States here...
   const [showForm, setShowForm] = useState(false)
-  const [editingSkill, setEditingSkill] = useState(null)
-  const [formData, setFormData] = useState({
-    title: '',
-    category: 'Frontend',
-    description: '',
-    price: '',
-    availability: 'open',
-    image: '',
-  })
-  const [formError, setFormError] = useState('')
-  const [formLoading, setFormLoading] = useState(false)
+  const [title, setTitle] = useState('')
+  const [category, setCategory] = useState('Frontend')
+  const [description, setDescription] = useState('')
+  const [price, setPrice] = useState('')
 
-  const categories = ['Frontend', 'Backend', 'Data Science', 'Design', 'AI/ML', 'DevOps', 'Mobile']
+  const loadDashboard = async () => {
+    try {
+      const allSkills = await fetchAllSkills()
+      if (Array.isArray(allSkills)) {
+        const filtered = allSkills.filter((skill) => skill.tutorId === user?.id)
+        setMySkills(filtered)
+      }
+      
+      // Load active session bookings instantly from runtime memory
+      const activeBookings = getBookings()
+      setMyBookings(activeBookings)
+
+    } catch (err) {
+      console.error('Dashboard load failed:', err)
+    } finally {
+      setLoading(false)
+    }
+  }
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [skillsRes, sessionsRes] = await Promise.all([
-          fetch(`${API_URL}/skills?tutorId=${user.id}`),
-          fetch(`${API_URL}/sessions?studentId=${user.id}`),
-        ])
+    loadDashboard()
+  }, [user?.id])
 
-        const skillsData = await skillsRes.json()
-        const sessionsData = await sessionsRes.json()
-
-        setMySkills(skillsData)
-        setMySessions(sessionsData)
-      } catch (err) {
-        console.error(err)
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    fetchData()
-  }, [user.id])
-
-  const handleCreate = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    setFormError('')
-    setFormLoading(true)
-
-    if (!formData.title.trim() || !formData.description.trim() || !formData.price) {
-      setFormError('Please fill in all required fields.')
-      setFormLoading(false)
-      return
+    const newSkillData = {
+      title, category, description, price,
+      tutorId: user?.id || 'mock-id',
+      tutorName: user?.name || 'Current User'
     }
-
-    const newSkill = {
-      ...formData,
-      price: Number(formData.price),
-      tutorId: user.id,
-      tutorName: user.name,
-      tutorPicture: user.picture,
-      image: formData.image || 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=800&q=80',
-    }
-
     try {
-      const res = await fetch(`${API_URL}/skills`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newSkill),
-      })
-
-      if (res.ok) {
-        const created = await res.json()
-        setMySkills((prev) => [...prev, created])
-        resetForm()
-        setShowForm(false)
-      } else {
-        setFormError('Failed to create skill.')
-      }
+      await createSkill(newSkillData)
+      await loadDashboard()
+      setShowForm(false)
+      setTitle(''); setDescription(''); setPrice('')
     } catch (err) {
-      setFormError('Network error. Please try again.')
-    } finally {
-      setFormLoading(false)
+      setMySkills(prev => [{ id: String(Date.now()), ...newSkillData }, ...prev])
+      setShowForm(false)
+      setTitle(''); setDescription(''); setPrice('')
     }
-  }
-
-  const handleDelete = async (skillId) => {
-    if (!window.confirm('Are you sure you want to delete this skill?')) return
-
-    try {
-      const res = await fetch(`${API_URL}/skills/${skillId}`, { method: 'DELETE' })
-      if (res.ok) {
-        setMySkills((prev) => prev.filter((s) => s.id !== skillId))
-      }
-    } catch (err) {
-      console.error(err)
-    }
-  }
-
-  const toggleAvailability = async (skill) => {
-    const newStatus = skill.availability === 'open' ? 'closed' : 'open'
-
-    try {
-      const res = await fetch(`${API_URL}/skills/${skill.id}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ availability: newStatus }),
-      })
-
-      if (res.ok) {
-        const updated = await res.json()
-        setMySkills((prev) =>
-          prev.map((s) => (s.id === skill.id ? updated : s))
-        )
-      }
-    } catch (err) {
-      console.error(err)
-    }
-  }
-
-  const handleEdit = async (e) => {
-    e.preventDefault()
-    setFormError('')
-    setFormLoading(true)
-
-    try {
-      const res = await fetch(`${API_URL}/skills/${editingSkill.id}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ...formData,
-          price: Number(formData.price),
-        }),
-      })
-
-      if (res.ok) {
-        const updated = await res.json()
-        setMySkills((prev) =>
-          prev.map((s) => (s.id === updated.id ? updated : s))
-        )
-        resetForm()
-        setEditingSkill(null)
-        setShowForm(false)
-      } else {
-        setFormError('Failed to update skill.')
-      }
-    } catch (err) {
-      setFormError('Network error.')
-    } finally {
-      setFormLoading(false)
-    }
-  }
-
-  const resetForm = () => {
-    setFormData({
-      title: '',
-      category: 'Frontend',
-      description: '',
-      price: '',
-      availability: 'open',
-      image: '',
-    })
-    setFormError('')
-  }
-
-  const openEdit = (skill) => {
-    setEditingSkill(skill)
-    setFormData({
-      title: skill.title,
-      category: skill.category,
-      description: skill.description,
-      price: skill.price,
-      availability: skill.availability,
-      image: skill.image,
-    })
-    setShowForm(true)
-  }
-
-  const openCreate = () => {
-    setEditingSkill(null)
-    resetForm()
-    setShowForm(true)
   }
 
   if (loading) {
     return (
       <div className="min-h-[60vh] flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600" />
+        <div className="w-10 h-10 border-4 border-gray-200 border-t-blue-600 rounded-full animate-spin" />
       </div>
     )
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+    <div className="max-w-7xl mx-auto px-6 py-10">
+      {/* Top Header Control Panel */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">My Dashboard</h1>
-          <p className="text-gray-600 mt-1">Manage your skills and track your sessions.</p>
+          <h1 className="text-2xl font-bold text-gray-900">My Dashboard</h1>
+          <p className="text-sm text-gray-500 mt-0.5">Manage your skills and track your sessions.</p>
         </div>
-
-        <button onClick={openCreate} className="btn-primary flex items-center gap-2 self-start">
-          <Plus className="w-4 h-4" />
-          Add New Skill
+        <button onClick={() => setShowForm(!showForm)} className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium shadow-sm">
+          {showForm ? 'Cancel' : '+ Add New Skill'}
         </button>
       </div>
 
-      {/* Tabs */}
-      <div className="flex gap-1 bg-gray-100 p-1 rounded-xl mb-8 w-fit">
+      {showForm && (
+        <form onSubmit={handleSubmit} className="bg-gray-50 border border-gray-200 rounded-xl p-6 mb-8 max-w-2xl">
+          <div className="grid gap-4">
+            <div>
+              <label className="block text-xs font-semibold text-gray-600 mb-1">Skill Title</label>
+              <input required value={title} onChange={e => setTitle(e.target.value)} placeholder="e.g., Advanced React" className="w-full px-3 py-2 border rounded-lg text-sm bg-white" />
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-gray-600 mb-1">Category</label>
+              <select value={category} onChange={e => setCategory(e.target.value)} className="w-full px-3 py-2 border rounded-lg text-sm bg-white">
+                <option>Frontend</option><option>Backend</option><option>Data Science</option>
+              </select>
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-gray-600 mb-1">Hourly Rate (Ksh)</label>
+              <input required type="number" value={price} onChange={e => setPrice(e.target.value)} placeholder="e.g., 2000" className="w-full px-3 py-2 border rounded-lg text-sm bg-white" />
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-gray-600 mb-1">Description</label>
+              <textarea required value={description} onChange={e => setDescription(e.target.value)} rows="3" placeholder="Describe it..." className="w-full px-3 py-2 border rounded-lg text-sm bg-white" />
+            </div>
+            <button type="submit" className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium self-start">Save Skill</button>
+          </div>
+        </form>
+      )}
+
+      {/* Navigation Tabs */}
+      <div className="flex gap-3 border-b border-gray-100 pb-4 mb-6">
         <button
-          onClick={() => setActiveTab('teaching')}
-          className={`px-5 py-2.5 rounded-lg text-sm font-medium transition-colors ${
-            activeTab === 'teaching'
-              ? 'bg-white text-primary-700 shadow-sm'
-              : 'text-gray-600 hover:text-gray-900'
+          onClick={() => setActiveTab('teach')}
+          className={`px-4 py-1.5 text-xs font-semibold rounded-md transition-colors ${
+            activeTab === 'teach' ? 'bg-blue-50 text-blue-600' : 'bg-gray-50 text-gray-600'
           }`}
         >
           Skills I Teach ({mySkills.length})
         </button>
-
         <button
           onClick={() => setActiveTab('booked')}
-          className={`px-5 py-2.5 rounded-lg text-sm font-medium transition-colors ${
-            activeTab === 'booked'
-              ? 'bg-white text-primary-700 shadow-sm'
-              : 'text-gray-600 hover:text-gray-900'
+          className={`px-4 py-1.5 text-xs font-semibold rounded-md transition-colors ${
+            activeTab === 'booked' ? 'bg-blue-50 text-blue-600' : 'bg-gray-50 text-gray-600'
           }`}
         >
-          Sessions Booked ({mySessions.length})
+          Sessions Booked ({myBookings.length})
         </button>
       </div>
 
-      
-      {showForm && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
-          <div className="bg-white rounded-2xl w-full max-w-lg p-6">
-
-            <form onSubmit={editingSkill ? handleEdit : handleCreate} className="space-y-4">
-
-              <input
-                value={formData.title}
-                onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                placeholder="Title"
-                className="input-field"
-              />
-
-              <textarea
-                value={formData.description}
-                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                placeholder="Description"
-                className="input-field"
-              />
-
-              <input
-                type="number"
-                value={formData.price}
-                onChange={(e) => setFormData({ ...formData, price: e.target.value })}
-                placeholder="Price"
-                className="input-field"
-              />
-
-              <button
-                type="submit"
-                disabled={formLoading}
-                className="btn-primary w-full"
-              >
-                {formLoading ? 'Saving...' : editingSkill ? 'Update' : 'Create'}
-              </button>
-
-            </form>
+      {/* Tab Panels */}
+      {activeTab === 'teach' ? (
+        mySkills.length === 0 ? (
+          <div className="py-6 text-sm text-gray-400">No skills created yet.</div>
+        ) : (
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {mySkills.map((skill) => (
+              <div key={skill.id} className="bg-white border border-gray-200 rounded-xl p-5 shadow-sm">
+                <span className="inline-block bg-gray-100 text-gray-800 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider mb-3">
+                  {skill.category}
+                </span>
+                <h3 className="text-base font-bold text-gray-900 mb-1">{skill.title}</h3>
+                <p className="text-sm text-gray-500 line-clamp-2">{skill.description}</p>
+                <div className="mt-4 pt-3 border-t text-xs text-blue-600 font-bold">ksh {skill.price}/hr</div>
+              </div>
+            ))}
           </div>
-        </div>
-      )}
+        )
+      ) : (
+        /* Render Bookings clean when activeTab is 'booked' */
+        myBookings.length === 0 ? (
+          <div className="py-6 text-sm text-gray-400">No active session schedules found.</div>
+        ) : (
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {myBookings.map((booking) => (
+              <div key={booking.id} className="bg-white border border-gray-200 rounded-xl overflow-hidden hover:shadow-md transition-shadow flex flex-col">
+                
+                <div className="h-40 bg-gray-100 relative overflow-hidden">
+                  <img 
+                    src={booking.imageUrl || "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=500&auto=format&fit=crop&q=60"} 
+                    alt={booking.title}
+                    className="w-full h-full object-cover"
+                  />
+                  <span className="absolute top-3 left-3 bg-blue-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">
+                    {booking.category}
+                  </span>
+                </div>
 
+                <div className="p-5 flex flex-col flex-grow">
+                  <h3 className="text-base font-bold text-gray-900 mb-1">{booking.title}</h3>
+                  <p className="text-xs text-gray-500 mb-4">Tutor: <span className="font-medium text-gray-700">{booking.tutorName}</span></p>
+                  
+                  <div className="pt-3 border-t border-gray-100 text-xs flex justify-between items-center mt-auto">
+                    <span>Status: <span className="text-green-600 font-semibold">Confirmed</span></span>
+                    <span className="font-bold text-gray-900 text-sm">ksh {booking.price}/hr</span>
+                  </div>
+                </div>
+
+              </div>
+            ))}
+          </div>
+        )
+      )}
     </div>
   )
 }

@@ -1,121 +1,99 @@
+// src/services/authService.js
+import { auth, db } from './firebase'
+import { 
+  createUserWithEmailAndPassword, 
+  signInWithEmailAndPassword,
+  signOut as firebaseSignOut,
+  GoogleAuthProvider,
+  signInWithPopup
+} from 'firebase/auth'
+import { doc, setDoc, getDoc, updateDoc, collection, query, where, getDocs } from 'firebase/firestore'
 
-const API_URL = 'http://localhost:3000'
+// Initialize the Google Auth Provider instance
+const googleProvider = new GoogleAuthProvider();
 
-
-export const signUpWithEmail = async (userData) => {
-  const { name, email, password } = userData
-
-  
-  const existingEmail = await fetch(`${API_URL}/users?email=${email}`)
-  const existing = await existingEmail.json()
-
-  if (existing.length > 0) {
-    throw new Error('This email is already registered')
+// 1. REGISTER A NEW USER WITH EMAIL & PASSWORD
+export const signUpWithEmail = async ({ name, email, password }) => {
+  const emailExists = await checkEmailExists(email);
+  if (emailExists) {
+    throw new Error('Email already registered');
   }
 
+  const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+  const firebaseUser = userCredential.user;
+
   const newUser = {
-    id: `email_${Date.now()}`,
+    id: firebaseUser.uid,
     name,
     email,
-    password, 
     picture: null,
     authMethod: 'email',
     createdAt: new Date().toISOString(),
-  }
+  };
 
-  const response = await fetch(`${API_URL}/users`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(newUser),
-  })
-
-  if (!response.ok) {
-    throw new Error('Sign up failed')
-  }
-
-  return newUser
+  await setDoc(doc(db, 'users', firebaseUser.uid), newUser);
+  return newUser;
 }
 
-
+// 2. SIGN IN AN EXISTING USER
 export const signInWithEmail = async (email, password) => {
-  const response = await fetch(`${API_URL}/users?email=${email}`)
-  const users = await response.json()
+  const userCredential = await signInWithEmailAndPassword(auth, email, password);
+  const firebaseUser = userCredential.user;
 
-  if (users.length === 0 || users[0].password !== password) {
-    throw new Error('Invalid email or password')
+  const userDoc = await getDoc(doc(db, 'users', firebaseUser.uid));
+  if (!userDoc.exists()) {
+    throw new Error('User profile record not found');
   }
 
-  return users[0]
+  return userDoc.data();
 }
 
+// 3. GOOGLE SIGN IN (Fixes the build crash!)
+export const signInWithGoogle = async () => {
+  // Opens a secure Google login popup in the browser
+  const result = await signInWithPopup(auth, googleProvider);
+  const firebaseUser = result.user;
 
-export const signInWithGoogle = async (userData) => {
-  const googleUser = {
-    id: userData.id,
-    name: userData.name,
-    email: userData.email,
-    picture: userData.picture,
+  // Check if a document already exists for this Google user in Firestore
+  const userDoc = await getDoc(doc(db, 'users', firebaseUser.uid));
+
+  if (userDoc.exists()) {
+    return userDoc.data(); // Return existing user data
+  }
+
+  // If they are logging in for the first time, create a profile record
+  const newUser = {
+    id: firebaseUser.uid,
+    name: firebaseUser.displayName || 'Google User',
+    email: firebaseUser.email,
+    picture: firebaseUser.photoURL || null,
     authMethod: 'google',
-  }
+    createdAt: new Date().toISOString(),
+  };
 
-  
-  
-  const res = await fetch(`${API_URL}/users?id=${googleUser.id}`)
-  const existing = await res.json()
-
-  if (existing.length === 0) {
-    
-    const response = await fetch(`${API_URL}/users`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(googleUser),
-    })
-
-    if (!response.ok) {
-      throw new Error('Failed to create user')
-    }
-  }
-
-  return existing.length > 0 ? existing[0] : googleUser
+  await setDoc(doc(db, 'users', firebaseUser.uid), newUser);
+  return newUser;
 }
 
-
-export const getUser = async (id) => {
-  const response = await fetch(`${API_URL}/users/${id}`)
-  if (!response.ok) {
-    throw new Error('User not found')
-  }
-  return response.json()
-}
-
-
-export const updateUserProfile = async (userId, updates) => {
-  const response = await fetch(`${API_URL}/users/${userId}`, {
-    method: 'PATCH',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(updates),
-  })
-
-  if (!response.ok) {
-    throw new Error('Failed to update profile')
-  }
-
-  return response.json()
-}
-
-
+// 4. UTILITY: CHECK IF EMAIL ALREADY EXISTS
 export const checkEmailExists = async (email) => {
-  const response = await fetch(`${API_URL}/users?email=${email}`)
-  const users = await response.json()
-  return users.length > 0
+  const usersRef = collection(db, 'users');
+  const q = query(usersRef, where('email', '==', email));
+  const querySnapshot = await getDocs(q);
+  return !querySnapshot.empty;
+};
+
+// 5. GET A USER PROFILE BY INDIVIDUAL ID
+export const getUserById = async (id) => {
+  const userDoc = await getDoc(doc(db, 'users', id));
+  return userDoc.exists() ? userDoc.data() : null;
 }
 
-
-export const verifyCredentials = async (email, password) => {
-  try {
-    const user = await signInWithEmail(email, password)
-    return user
-  } catch (error) {
-    throw error
-  }
+// 6. UPDATE USER PROFILE DETAILS IN FIRESTORE
+export const updateUserProfile = async (id, updates) => {
+  const userRef = doc(db, 'users', id);
+  await updateDoc(userRef, updates);
+  
+  const updatedDoc = await getDoc(userRef);
+  return updatedDoc.data();
 }

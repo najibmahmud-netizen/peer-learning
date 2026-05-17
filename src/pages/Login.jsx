@@ -1,21 +1,20 @@
 import { useNavigate } from 'react-router-dom'
-import { GoogleLogin } from '@react-oauth/google'
-import { jwtDecode } from 'jwt-decode'
 import { useUser } from '../context/UserContext'
-import { BookOpen, Shield, Zap, Users, Eye, EyeOff, Check, X } from 'lucide-react'
 import { useState } from 'react'
-import { validateFormData, validatePassword } from '../utils/validation'
 
-const API_URL = 'http://localhost:3000'
+import {
+  signUpWithEmail,
+  signInWithEmail,
+  signInWithGoogle
+} from '../services/authService'
+
+import { validateFormData } from '../utils/validation'
 
 export default function Login() {
   const { login } = useUser()
   const navigate = useNavigate()
 
- 
   const [isSignUp, setIsSignUp] = useState(false)
-
-  
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -23,418 +22,174 @@ export default function Login() {
     name: '',
   })
 
- 
   const [errors, setErrors] = useState({})
-  const [isLoading, setIsLoading] = useState(false)
-  const [showPassword, setShowPassword] = useState(false)
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
-  const [successMessage, setSuccessMessage] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [success, setSuccess] = useState('')
 
-  
-  const handleGoogleSuccess = async (credentialResponse) => {
-    try {
-      setIsLoading(true)
-      const decoded = jwtDecode(credentialResponse.credential)
-      const userData = {
-        id: `google_${decoded.sub}`,
-        name: decoded.name,
-        email: decoded.email,
-        picture: decoded.picture,
-        authMethod: 'google',
-      }
-
-     
-      const res = await fetch(`${API_URL}/users?id=${userData.id}`)
-      const existing = await res.json()
-
-      if (existing.length === 0) {
-        
-        await fetch(`${API_URL}/users`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(userData),
-        })
-      }
-
-      login(userData)
-      navigate('/dashboard')
-    } catch (err) {
-      console.error(err)
-      setErrors({ submit: 'Google authentication failed. Please try again.' })
-    } finally {
-      setIsLoading(false)
-    }
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value })
+    setErrors({ ...errors, [e.target.name]: '' })
   }
 
- 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }))
-    
-    if (errors[name]) {
-      setErrors((prev) => ({
-        ...prev,
-        [name]: '',
-      }))
-    }
-  }
-
- 
   const handleSubmit = async (e) => {
     e.preventDefault()
     setErrors({})
-    setSuccessMessage('')
+    setSuccess('')
 
-    
-    const validationErrors = validateFormData(formData, isSignUp)
-    if (Object.keys(validationErrors).length > 0) {
-      setErrors(validationErrors)
+    const validation = validateFormData(formData, isSignUp)
+    if (Object.keys(validation).length > 0) {
+      setErrors(validation)
       return
     }
 
     try {
-      setIsLoading(true)
+      setLoading(true)
 
+      let user;
       if (isSignUp) {
-    
-        const newUser = {
-          id: `email_${Date.now()}`,
-          name: formData.name,
-          email: formData.email,
-          password: formData.password, 
-          picture: null,
-          authMethod: 'email',
-          createdAt: new Date().toISOString(),
-        }
-
-       
-        const existingEmail = await fetch(`${API_URL}/users?email=${formData.email}`)
-        const existing = await existingEmail.json()
-
-        if (existing.length > 0) {
-          setErrors({ email: 'This email is already registered. Please sign in instead.' })
-          return
-        }
-
-      
-        const response = await fetch(`${API_URL}/users`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(newUser),
-        })
-
-        if (!response.ok) throw new Error('Sign up failed')
-
-      
-        login(newUser)
-        setSuccessMessage('Account created successfully! Redirecting...')
-        setTimeout(() => navigate('/dashboard'), 1500)
+        user = await signUpWithEmail(formData)
+        setSuccess('Account created successfully!')
       } else {
-        
-        const response = await fetch(`${API_URL}/users?email=${formData.email}`)
-        const users = await response.json()
-
-        if (users.length === 0 || users[0].password !== formData.password) {
-          setErrors({ submit: 'Invalid email or password' })
-          return
-        }
-
-        const user = users[0]
-        login(user)
-        setSuccessMessage('Sign in successful! Redirecting...')
-        setTimeout(() => navigate('/dashboard'), 1500)
+        user = await signInWithEmail(formData.email, formData.password)
+        setSuccess('Logged in successfully!')
       }
+      
+      // Update our global user state context and redirect
+      login(user)
+      navigate('/dashboard')
     } catch (err) {
-      console.error(err)
-      setErrors({ submit: 'An error occurred. Please try again.' })
+      setErrors({ submit: err.message || 'Authentication failed' })
     } finally {
-      setIsLoading(false)
+      setLoading(false)
     }
   }
 
-  
-  const passwordValidation = isSignUp ? validatePassword(formData.password) : null
+  const handleGoogle = async () => {
+    setErrors({})
+    try {
+      setLoading(true)
+      const user = await signInWithGoogle()
+      login(user)
+      setSuccess('Google login successful!')
+      navigate('/dashboard')
+    } catch (err) {
+      setErrors({ submit: err.message || 'Google Auth failed' })
+    } finally {
+      setLoading(false)
+    }
+  }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4">
-      <div className="max-w-5xl w-full grid md:grid-cols-2 bg-white rounded-2xl shadow-2xl overflow-hidden">
-        
-        <div className="hidden md:flex bg-gradient-to-br from-blue-600 to-blue-800 p-12 text-white flex-col justify-center">
-          <div className="mb-10">
-            <div className="w-14 h-14 bg-white/20 rounded-xl flex items-center justify-center mb-6 backdrop-blur">
-              <BookOpen className="w-8 h-8 text-white" strokeWidth={1.5} />
-            </div>
-            <h2 className="text-3xl font-bold mb-4">MoringaLearn</h2>
-            <p className="text-blue-100 leading-relaxed text-lg">
-              {isSignUp
-                ? 'Join our peer learning community and start your journey today'
-                : 'Welcome back! Access your learning dashboard'}
-            </p>
-          </div>
+    <div className="min-h-[80vh] flex items-center justify-center bg-gray-50 px-4">
+      <div className="max-w-md w-full bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden">
+        <div className="p-8">
+          <h2 className="text-2xl font-bold text-gray-900 text-center mb-6">
+            {isSignUp ? 'Create an Account' : 'Welcome Back'}
+          </h2>
 
-          <div className="space-y-6">
-            
-            <div className="flex items-start gap-4">
-              <div className="w-12 h-12 bg-white/10 rounded-lg flex items-center justify-center flex-shrink-0 backdrop-blur">
-                <Users className="w-6 h-6 text-blue-200" strokeWidth={1.5} />
-              </div>
-              <div>
-                <p className="font-semibold text-lg">Peer Community</p>
-                <p className="text-blue-100 text-sm mt-1">Learn from fellow Moringa students and build your network</p>
-              </div>
-            </div>
-
-          
-            <div className="flex items-start gap-4">
-              <div className="w-12 h-12 bg-white/10 rounded-lg flex items-center justify-center flex-shrink-0 backdrop-blur">
-                <Zap className="w-6 h-6 text-blue-200" strokeWidth={1.5} />
-              </div>
-              <div>
-                <p className="font-semibold text-lg">Instant Access</p>
-                <p className="text-blue-100 text-sm mt-1">Book tutoring sessions and access resources in seconds</p>
-              </div>
-            </div>
-
-            
-            <div className="flex items-start gap-4">
-              <div className="w-12 h-12 bg-white/10 rounded-lg flex items-center justify-center flex-shrink-0 backdrop-blur">
-                <Shield className="w-6 h-6 text-blue-200" strokeWidth={1.5} />
-              </div>
-              <div>
-                <p className="font-semibold text-lg">Secure Login</p>
-                <p className="text-blue-100 text-sm mt-1">Protected with industry-standard security and Google OAuth</p>
-              </div>
-            </div>
-          </div>
-
-       
-          <div className="mt-12 pt-8 border-t border-white/10">
-            <p className="text-blue-100 text-sm">
-              Join thousands of Moringa students taking control of their learning journey
-            </p>
-          </div>
-        </div>
-
-        
-        <div className="p-8 md:p-12 flex flex-col justify-center">
-       
-          <div className="text-center mb-8">
-            <h3 className="text-3xl font-bold text-gray-900 mb-2">
-              {isSignUp ? 'Create Account' : 'Sign In'}
-            </h3>
-            <p className="text-gray-600">
-              {isSignUp
-                ? 'Join MoringaLearn and start learning with peers'
-                : 'Welcome back to your learning platform'}
-            </p>
-          </div>
-
-        
           {errors.submit && (
-            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-start gap-3">
-              <X className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
-              <p className="text-red-700 text-sm">{errors.submit}</p>
+            <div className="mb-4 p-3 bg-red-50 text-red-600 rounded-lg text-sm border border-red-200">
+              {errors.submit}
             </div>
           )}
 
-          
-          {successMessage && (
-            <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg flex items-start gap-3">
-              <Check className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
-              <p className="text-green-700 text-sm">{successMessage}</p>
+          {success && (
+            <div className="mb-4 p-3 bg-green-50 text-green-600 rounded-lg text-sm border border-green-200">
+              {success}
             </div>
           )}
 
-        
-          <form onSubmit={handleSubmit} className="space-y-4 mb-6">
-            
+          <form onSubmit={handleSubmit} className="space-y-4">
             {isSignUp && (
               <div>
-                <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
-                  Full Name
-                </label>
                 <input
-                  type="text"
-                  id="name"
                   name="name"
+                  type="text"
+                  placeholder="Full Name"
                   value={formData.name}
-                  onChange={handleInputChange}
-                  placeholder="John Doe"
-                  disabled={isLoading}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition disabled:bg-gray-50 disabled:cursor-not-allowed"
+                  onChange={handleChange}
+                  className={`w-full px-4 py-3 border rounded-lg outline-none transition focus:ring-2 focus:ring-blue-500 ${errors.name ? 'border-red-500' : 'border-gray-300'}`}
                 />
-                {errors.name && <p className="text-red-600 text-sm mt-1">{errors.name}</p>}
+                {errors.name && <p className="text-xs text-red-500 mt-1">{errors.name}</p>}
               </div>
             )}
 
-           
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                Email Address
-              </label>
               <input
-                type="email"
-                id="email"
                 name="email"
+                type="email"
+                placeholder="Email Address"
                 value={formData.email}
-                onChange={handleInputChange}
-                placeholder="you@example.com"
-                disabled={isLoading}
-                className={`w-full px-4 py-3 border rounded-lg outline-none transition focus:ring-2 focus:ring-blue-500 disabled:bg-gray-50 disabled:cursor-not-allowed ${
-                  errors.email ? 'border-red-500 focus:ring-red-500' : 'border-gray-300'
-                }`}
+                onChange={handleChange}
+                className={`w-full px-4 py-3 border rounded-lg outline-none transition focus:ring-2 focus:ring-blue-500 ${errors.email ? 'border-red-500' : 'border-gray-300'}`}
               />
-              {errors.email && <p className="text-red-600 text-sm mt-1">{errors.email}</p>}
+              {errors.email && <p className="text-xs text-red-500 mt-1">{errors.email}</p>}
             </div>
 
-           
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
-                Password
-              </label>
-              <div className="relative">
-                <input
-                  type={showPassword ? 'text' : 'password'}
-                  id="password"
-                  name="password"
-                  value={formData.password}
-                  onChange={handleInputChange}
-                  placeholder={isSignUp ? 'At least 8 characters' : 'Your password'}
-                  disabled={isLoading}
-                  className={`w-full px-4 py-3 pr-12 border rounded-lg outline-none transition focus:ring-2 focus:ring-blue-500 disabled:bg-gray-50 disabled:cursor-not-allowed ${
-                    errors.password ? 'border-red-500 focus:ring-red-500' : 'border-gray-300'
-                  }`}
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  disabled={isLoading}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 disabled:cursor-not-allowed"
-                >
-                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                </button>
-              </div>
-
-             
-              {isSignUp && formData.password && (
-                <div className="mt-3 space-y-2">
-                  <div className="text-xs font-medium text-gray-600">Password requirements:</div>
-                  <div className="space-y-1 text-xs">
-                    <div className={`flex items-center gap-2 ${passwordValidation.feedback.length ? 'text-green-600' : 'text-gray-500'}`}>
-                      {passwordValidation.feedback.length ? <Check className="w-4 h-4" /> : <X className="w-4 h-4" />}
-                      At least 8 characters
-                    </div>
-                    <div className={`flex items-center gap-2 ${passwordValidation.feedback.uppercase ? 'text-green-600' : 'text-gray-500'}`}>
-                      {passwordValidation.feedback.uppercase ? <Check className="w-4 h-4" /> : <X className="w-4 h-4" />}
-                      One uppercase letter
-                    </div>
-                    <div className={`flex items-center gap-2 ${passwordValidation.feedback.lowercase ? 'text-green-600' : 'text-gray-500'}`}>
-                      {passwordValidation.feedback.lowercase ? <Check className="w-4 h-4" /> : <X className="w-4 h-4" />}
-                      One lowercase letter
-                    </div>
-                    <div className={`flex items-center gap-2 ${passwordValidation.feedback.number ? 'text-green-600' : 'text-gray-500'}`}>
-                      {passwordValidation.feedback.number ? <Check className="w-4 h-4" /> : <X className="w-4 h-4" />}
-                      One number
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {errors.password && <p className="text-red-600 text-sm mt-2">{errors.password}</p>}
+              <input
+                name="password"
+                type="password"
+                placeholder="Password"
+                value={formData.password}
+                onChange={handleChange}
+                className={`w-full px-4 py-3 border rounded-lg outline-none transition focus:ring-2 focus:ring-blue-500 ${errors.password ? 'border-red-500' : 'border-gray-300'}`}
+              />
+              {errors.password && <p className="text-xs text-red-500 mt-1">{errors.password}</p>}
             </div>
 
-            
             {isSignUp && (
               <div>
-                <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-2">
-                  Confirm Password
-                </label>
-                <div className="relative">
-                  <input
-                    type={showConfirmPassword ? 'text' : 'password'}
-                    id="confirmPassword"
-                    name="confirmPassword"
-                    value={formData.confirmPassword}
-                    onChange={handleInputChange}
-                    placeholder="Confirm your password"
-                    disabled={isLoading}
-                    className={`w-full px-4 py-3 pr-12 border rounded-lg outline-none transition focus:ring-2 focus:ring-blue-500 disabled:bg-gray-50 disabled:cursor-not-allowed ${
-                      errors.confirmPassword ? 'border-red-500 focus:ring-red-500' : 'border-gray-300'
-                    }`}
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    disabled={isLoading}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 disabled:cursor-not-allowed"
-                  >
-                    {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                  </button>
-                </div>
-                {errors.confirmPassword && <p className="text-red-600 text-sm mt-1">{errors.confirmPassword}</p>}
+                <input
+                  name="confirmPassword"
+                  type="password"
+                  placeholder="Confirm Password"
+                  value={formData.confirmPassword}
+                  onChange={handleChange}
+                  className={`w-full px-4 py-3 border rounded-lg outline-none transition focus:ring-2 focus:ring-blue-500 ${errors.confirmPassword ? 'border-red-500' : 'border-gray-300'}`}
+                />
+                {errors.confirmPassword && <p className="text-xs text-red-500 mt-1">{errors.confirmPassword}</p>}
               </div>
             )}
 
-          
             <button
+              disabled={loading}
               type="submit"
-              disabled={isLoading}
-              className="w-full bg-blue-600 text-white font-semibold py-3 rounded-lg hover:bg-blue-700 transition disabled:bg-gray-400 disabled:cursor-not-allowed mt-6"
+              className="w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition disabled:bg-gray-400"
             >
-              {isLoading ? (
-                <span className="flex items-center justify-center gap-2">
-                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                  {isSignUp ? 'Creating Account...' : 'Signing In...'}
-                </span>
-              ) : isSignUp ? (
-                'Create Account'
-              ) : (
-                'Sign In'
-              )}
+              {loading ? 'Processing...' : isSignUp ? 'Sign Up' : 'Login'}
             </button>
           </form>
 
-          
-          <div className="flex items-center gap-3 mb-6">
-            <div className="flex-1 h-px bg-gray-300" />
-            <span className="text-sm text-gray-500">or</span>
-            <div className="flex-1 h-px bg-gray-300" />
+          <div className="my-6 flex items-center justify-between text-gray-400">
+            <hr className="w-full border-gray-200" />
+            <span className="text-xs uppercase px-2">or</span>
+            <hr className="w-full border-gray-200" />
           </div>
 
-         
-          <div className="flex justify-center mb-6">
-            <GoogleLogin
-              onSuccess={handleGoogleSuccess}
-              onError={() => setErrors({ submit: 'Google authentication failed. Please try again.' })}
-              size="large"
-              width="100%"
-              text={isSignUp ? 'signup_with' : 'signin_with'}
-              shape="rectangular"
-            />
-          </div>
+          <button
+            onClick={handleGoogle}
+            disabled={loading}
+            type="button"
+            className="w-full py-3 px-4 border border-gray-300 hover:bg-gray-50 text-gray-700 font-medium rounded-lg transition flex items-center justify-center gap-2"
+          >
+            <svg className="w-5 h-5" viewBox="0 0 24 24">
+              <path fill="#EA4335" d="M12 5.04c1.64 0 3.12.56 4.28 1.67l3.2-3.2C17.52 1.57 14.96 1 12 1 7.35 1 3.4 3.65 1.5 7.5l3.6 2.8C6.01 7.42 8.78 5.04 12 5.04z"/>
+              <path fill="#4285F4" d="M23.49 12.27c0-.81-.07-1.59-.2-2.36H12v4.51h6.46c-.28 1.48-1.12 2.73-2.38 3.58l3.66 2.84c2.14-1.98 3.37-4.89 3.37-8.57z"/>
+              <path fill="#FBBC05" d="M5.1 14.7c-.25-.75-.39-1.55-.39-2.37s.14-1.62.39-2.37l-3.6-2.8C.54 8.94 0 10.42 0 12s.54 3.06 1.5 4.47l3.6-2.77z"/>
+              <path fill="#34A853" d="M12 23c3.24 0 5.97-1.07 7.96-2.92l-3.66-2.84c-1.01.67-2.3 1.08-4.3 1.08-3.22 0-5.99-2.38-6.96-5.26l-3.6 2.8C3.4 20.35 7.35 23 12 23z"/>
+            </svg>
+            Continue with Google
+          </button>
 
-          
-          <p className="text-center text-gray-600 text-sm">
-            {isSignUp ? "Already have an account? " : "Don't have an account? "}
+          <p className="text-sm text-center mt-6 text-gray-600">
+            {isSignUp ? 'Already have an account?' : "Don't have an account?"}
             <button
-              onClick={() => {
-                setIsSignUp(!isSignUp)
-                setFormData({ email: '', password: '', confirmPassword: '', name: '' })
-                setErrors({})
-              }}
-              disabled={isLoading}
-              className="text-blue-600 font-semibold hover:underline disabled:cursor-not-allowed"
+              className="text-blue-600 font-medium ml-1 hover:underline"
+              onClick={() => setIsSignUp(!isSignUp)}
             >
-              {isSignUp ? 'Sign In' : 'Sign Up'}
+              {isSignUp ? 'Login' : 'Sign Up'}
             </button>
-          </p>
-
-          
-          <p className="text-center text-xs text-gray-400 mt-6">
-            By {isSignUp ? 'signing up, you agree' : 'signing in, you agree'} to our terms and privacy policy
           </p>
         </div>
       </div>

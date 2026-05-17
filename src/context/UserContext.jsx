@@ -1,33 +1,57 @@
-import { createContext, useContext, useState, useEffect } from 'react'
+import { createContext, useContext, useState } from 'react';
+import {
+  createSession,
+  clearSession,
+  getSessionUser,
+  isSessionValid,
+} from '../utils/sessionManager';
 
-const UserContext = createContext(null)
+const UserContext = createContext();
 
-export function UserProvider({ children }) {
+export const UserProvider = ({ children }) => {
+  // Grab the data instantly inline on initial engine load instead of waiting for useEffect
   const [user, setUser] = useState(() => {
-    const saved = localStorage.getItem('moringa_user')
-    return saved ? JSON.parse(saved) : null
-  })
+    const sessionUser = getSessionUser();
+    return sessionUser && isSessionValid() ? sessionUser : null;
+  });
 
-  useEffect(() => {
-    if (user) {
-      localStorage.setItem('moringa_user', JSON.stringify(user))
-    } else {
-      localStorage.removeItem('moringa_user')
-    }
-  }, [user])
+  const login = (userData, token = null) => {
+    createSession(userData, token);
+    setUser(userData);
+  };
 
-  const login = (userData) => setUser(userData)
-  const logout = () => setUser(null)
+  const logout = () => {
+    clearSession();
+    setUser(null);
+  };
+
+  const updateUser = (updatedData) => {
+    const newUser = { ...user, ...updatedData };
+    createSession(newUser);
+    setUser(newUser);
+  };
 
   return (
-    <UserContext.Provider value={{ user, login, logout, isAuthenticated: !!user }}>
+    <UserContext.Provider
+      value={{
+        user,
+        setUser,
+        login,
+        logout,
+        updateUser,
+        isAuthenticated: !!user,
+        loading: false, // Since memory hydration is instantaneous, loading is immediately false
+      }}
+    >
       {children}
     </UserContext.Provider>
-  )
-}
+  );
+};
 
-export function useUser() {
-  const context = useContext(UserContext)
-  if (!context) throw new Error('useUser must be used within UserProvider')
-  return context
-}
+export const useUser = () => {
+  const context = useContext(UserContext);
+  if (!context) {
+    throw new Error('useUser must be used within a UserProvider');
+  }
+  return context;
+};

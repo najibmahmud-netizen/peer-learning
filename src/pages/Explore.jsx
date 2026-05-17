@@ -1,78 +1,72 @@
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Search, Filter } from 'lucide-react'
-
-const API_URL = 'http://localhost:3000'
+import { fetchAllSkills } from "../services/skillService"
 
 export default function Explore() {
   const [skills, setSkills] = useState([])
   const [loading, setLoading] = useState(true)
-  const [searchTerm, setSearchTerm] = useState('')
+  const [search, setSearch] = useState('')
   const [selectedCategory, setSelectedCategory] = useState('All')
 
   const categories = ['All', 'Frontend', 'Backend', 'Data Science', 'Design', 'AI/ML', 'DevOps', 'Mobile']
 
   useEffect(() => {
-    fetch(`${API_URL}/skills`)
-      .then((res) => res.json())
-      .then((data) => {
-        setSkills(data)
+    const loadSkills = async () => {
+      try {
+        const data = await fetchAllSkills()
+        if (Array.isArray(data)) {
+          setSkills(data)
+        }
+      } catch (err) {
+        console.error('Failed to load skills:', err)
+      } finally {
         setLoading(false)
-      })
-      .catch((err) => {
-        console.error(err)
-        setLoading(false)
-      })
+      }
+    }
+    loadSkills()
   }, [])
 
   const filteredSkills = skills.filter((skill) => {
-    const matchesSearch =
-      skill.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      skill.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      skill.tutorName.toLowerCase().includes(searchTerm.toLowerCase())
+    const matchesSearch = 
+      skill.title?.toLowerCase().includes(search.toLowerCase()) ||
+      skill.description?.toLowerCase().includes(search.toLowerCase()) ||
+      skill.tutorName?.toLowerCase().includes(search.toLowerCase())
+    
     const matchesCategory = selectedCategory === 'All' || skill.category === selectedCategory
+
     return matchesSearch && matchesCategory
   })
 
   if (loading) {
     return (
       <div className="min-h-[60vh] flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600" />
+        <div className="w-10 h-10 border-4 border-gray-200 border-t-blue-600 rounded-full animate-spin" />
       </div>
     )
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <div className="max-w-7xl mx-auto px-6 py-8">
+      {/* Search and Category Filter Container */}
+      <div className="bg-white border border-gray-200 rounded-xl p-4 mb-6 shadow-sm">
+        <div className="flex flex-col gap-4">
+          <input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search by skill, description, or tutor..."
+            className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 transition-colors"
+          />
 
-      <div className="mb-10">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Explore Skills</h1>
-        <p className="text-gray-600">Discover what your peers are teaching and book a session today.</p>
-      </div>
-
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 mb-8">
-        <div className="flex flex-col md:flex-row gap-4">
-          <div className="relative flex-grow">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-            <input
-              type="text"
-              placeholder="Search by skill, description, or tutor..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="input-field pl-10"
-            />
-          </div>
-
-          <div className="flex items-center gap-2 overflow-x-auto pb-1 md:pb-0">
-            <Filter className="w-5 h-5 text-gray-400 flex-shrink-0" />
+          {/* Horizontal Category Pill Filters */}
+          <div className="flex gap-2 overflow-x-auto pb-1 text-xs font-medium text-gray-500">
             {categories.map((cat) => (
               <button
                 key={cat}
                 onClick={() => setSelectedCategory(cat)}
-                className={`px-3 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap transition-colors ksh{
+                className={`px-3 py-1.5 rounded-md transition-colors whitespace-nowrap ${
                   selectedCategory === cat
-                    ? 'bg-primary-600 text-white'
-                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                    ? 'bg-gray-100 text-gray-900 font-semibold'
+                    : 'hover:bg-gray-50 hover:text-gray-900'
                 }`}
               >
                 {cat}
@@ -82,70 +76,49 @@ export default function Explore() {
         </div>
       </div>
 
-      <p className="text-sm text-gray-500 mb-6">
-        Showing {filteredSkills.length} {filteredSkills.length === 1 ? 'skill' : 'skills'}
-        {selectedCategory !== 'All' && ` in ksh{selectedCategory}`}
-        {searchTerm && ` matching "ksh{searchTerm}"`}
-      </p>
+      <div className="mb-6">
+        <p className="text-sm font-medium text-gray-500">
+          Showing {filteredSkills.length} {filteredSkills.length === 1 ? 'skill' : 'skills'}
+        </p>
+      </div>
 
-      {filteredSkills.length === 0 ? (
-        <div className="text-center py-20">
-          <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <Search className="w-8 h-8 text-gray-400" />
-          </div>
-          <h3 className="text-lg font-semibold text-gray-900 mb-1">No skills found</h3>
-          <p className="text-gray-500">Try adjusting your search or filter criteria.</p>
-        </div>
-      ) : (
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredSkills.map((skill) => (
-            <Link key={skill.id} to={`/skill/${skill.id}`} className="card group">
-              <div className="relative h-48 overflow-hidden">
-                <img
-                  src={skill.image}
-                  alt={skill.title}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                />
-                <div className="absolute top-3 left-3">
-                  <span className="badge bg-white/90 text-gray-700 backdrop-blur">
-                    {skill.category}
-                  </span>
-                </div>
-                <div className="absolute top-3 right-3">
-                  <span
-                    className={`badge backdrop-blur ${
-                      skill.availability === 'open'
-                        ? 'bg-green-100 text-green-700'
-                        : 'bg-red-100 text-red-700'
-                    }`}
-                  >
-                    {skill.availability === 'open' ? 'Available' : 'Closed'}
-                  </span>
-                </div>
+      {/* Skills Grid Layout */}
+      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {filteredSkills.map((skill) => (
+          <Link
+            key={skill.id}
+            to={`/skill/${skill.id}`}
+            className="group bg-white border border-gray-200 rounded-xl overflow-hidden hover:shadow-md transition-shadow flex flex-col"
+          >
+            <div className="h-44 bg-gray-100 relative overflow-hidden">
+              <img 
+                src={skill.imageUrl || "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=500&auto=format&fit=crop&q=60"} 
+                alt={skill.title}
+                className="w-full h-full object-cover"
+              />
+              <span className="absolute top-3 left-3 bg-gray-900/80 backdrop-blur-sm text-white text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">
+                {skill.category}
+              </span>
+            </div>
+
+            <div className="p-5 flex flex-col flex-grow">
+              <h2 className="text-base font-bold text-gray-900 group-hover:text-blue-600 transition-colors mb-1.5">
+                {skill.title}
+              </h2>
+              <p className="text-sm text-gray-500 line-clamp-2 mb-4 flex-grow">
+                {skill.description || 'No description provided.'}
+              </p>
+
+              <div className="flex justify-between items-center pt-3 border-t border-gray-100 text-xs">
+                <span className="text-gray-600 font-medium">{skill.tutorName || 'Moringa Tutor'}</span>
+                <span className="text-blue-600 font-bold text-sm">
+                  ksh{skill.price || '0'}<span className="text-gray-400 font-normal text-xs">/hr</span>
+                </span>
               </div>
-
-              <div className="p-5">
-                <h3 className="text-lg font-semibold text-gray-900 mb-2 group-hover:text-primary-600 transition-colors">
-                  {skill.title}
-                </h3>
-                <p className="text-gray-600 text-sm line-clamp-2 mb-4">{skill.description}</p>
-
-                <div className="flex items-center justify-between">
-                 
-                  <span className="text-sm text-gray-700 font-medium">
-                    {skill.tutorName}
-                  </span>
-
-                  <div className="flex items-center gap-1 text-primary-600 font-semibold">
-                    <span className="text-sm">ksh{skill.price}</span>
-                    <span className="text-xs text-gray-400">/hr</span>
-                  </div>
-                </div>
-              </div>
-            </Link>
-          ))}
-        </div>
-      )}
+            </div>
+          </Link>
+        ))}
+      </div>
     </div>
   )
 }

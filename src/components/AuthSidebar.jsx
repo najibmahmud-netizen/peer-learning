@@ -1,5 +1,3 @@
-
-
 export function AuthFeatures({ features }) {
   return (
     <div className="space-y-6">

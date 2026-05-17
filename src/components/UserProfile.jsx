@@ -1,7 +1,5 @@
-
-
 import { useState } from 'react'
-import { User, Mail, Phone, MapPin, Calendar, Edit2, Save, X } from 'lucide-react'
+
 import { useUser } from '../context/UserContext'
 import { AuthInput, AuthAlert } from './AuthComponents'
 

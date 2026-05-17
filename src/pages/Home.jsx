@@ -1,20 +1,19 @@
 import { Link } from 'react-router-dom'
-import { BookOpen, Users, Zap, ArrowRight, Star, CheckCircle } from 'lucide-react'
 
 export default function Home() {
   const features = [
     {
-      icon: BookOpen,
+      
       title: 'Learn New Skills',
       desc: 'Access a curated library of skills taught by your peers at Moringa School.',
     },
     {
-      icon: Users,
+     
       title: 'Peer Tutoring',
       desc: 'Connect directly with students who have mastered the topics you want to learn.',
     },
     {
-      icon: Zap,
+    
       title: 'Fast Booking',
       desc: 'Book tutoring sessions in seconds with our streamlined scheduling system.',
     },
@@ -52,7 +51,7 @@ export default function Home() {
                 className="inline-flex items-center gap-2 px-6 py-3 bg-white text-primary-700 rounded-xl font-semibold hover:bg-primary-50 transition-colors"
               >
                 Explore Skills
-                <ArrowRight className="w-5 h-5" />
+      
               </Link>
               <Link
                 to="/login"
@@ -94,10 +93,6 @@ export default function Home() {
           <div className="grid md:grid-cols-3 gap-8">
             {features.map((f, i) => (
               <div key={i} className="card p-8 text-center">
-                <div className="w-14 h-14 bg-primary-100 rounded-xl flex items-center justify-center mx-auto mb-6">
-                  <f.icon className="w-7 h-7 text-primary-600" />
-                </div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-3">{f.title}</h3>
                 <p className="text-gray-600 leading-relaxed">{f.desc}</p>
               </div>
             ))}
