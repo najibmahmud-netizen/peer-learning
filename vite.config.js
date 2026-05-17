@@ -4,7 +4,7 @@ import react from '@vitejs/plugin-react'
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
-  base: '/peer-learning-platform/', 
+  base: '/peer-learning/', 
   server: {
     port: 5173
   }
