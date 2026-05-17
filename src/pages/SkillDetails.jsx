@@ -108,7 +108,7 @@ export default function SkillDetails() {
 
       <div className="grid lg:grid-cols-3 gap-8">
 
-        {/* MAIN CONTENT */}
+        
         <div className="lg:col-span-2">
 
           <div className="rounded-2xl overflow-hidden mb-6">
@@ -121,6 +121,7 @@ export default function SkillDetails() {
 
           <div className="flex items-center gap-3 mb-4">
             <span className="badge bg-primary-100 text-primary-700">{skill.category}</span>
+
             <span
               className={`badge ${
                 skill.availability === 'open'
@@ -136,7 +137,6 @@ export default function SkillDetails() {
 
           <div className="flex items-center gap-4 mb-6 pb-6 border-b border-gray-200">
 
-            {/* PROFILE PHOTO REMOVED */}
             <div className="w-12 h-12 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold">
               {skill.tutorName?.charAt(0).toUpperCase()}
             </div>
@@ -171,14 +171,16 @@ export default function SkillDetails() {
           </div>
         </div>
 
-        {/* SIDEBAR (UNCHANGED) */}
+        {/* SIDEBAR */}
         <div className="lg:col-span-1">
           <div className="sticky top-24">
             <div className="card p-6">
 
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-baseline gap-1">
-                  <span className="text-3xl font-bold text-gray-900">${skill.price}</span>
+                  <span className="text-3xl font-bold text-gray-900">
+                    KSh {skill.price}
+                  </span>
                   <span className="text-gray-500">/hour</span>
                 </div>
               </div>

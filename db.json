@@ -2,14 +2,14 @@
   "users": [
     {
       "id": "google_123",
-      "name": "Alice Johnson",
+      "name": "Petter Muturi",
       "email": "alice@example.com",
       "picture": "https://i.pravatar.cc/150?u=alice",
       "role": "student"
     },
     {
       "id": "google_456",
-      "name": "Bob Smith",
+      "name": "Kelvin Murithi",
       "email": "bob@example.com",
       "picture": "https://i.pravatar.cc/150?u=bob",
       "role": "tutor"
@@ -31,6 +31,15 @@
       "picture": null,
       "authMethod": "email",
       "createdAt": "2026-05-15T13:58:55.248Z"
+    },
+    {
+      "id": "aJrWR3al-6M",
+      "name": "Safia Bulle",
+      "email": "safiabulle7@gmail.com",
+      "password": "Safia@21206",
+      "picture": null,
+      "authMethod": "email",
+      "createdAt": "2026-05-16T11:33:44.000Z"
     }
   ],
   "skills": [
@@ -40,9 +49,9 @@
       "category": "Frontend",
       "description": "Learn React hooks, components, and state management from scratch.",
       "tutorId": "google_456",
-      "tutorName": "Bob Smith",
+      "tutorName": "Petter Muturi",
       "tutorPicture": "https://i.pravatar.cc/150?u=bob",
-      "price": 25,
+      "price": 25000,
       "availability": "open",
       "image": "https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=800&q=80"
     },
@@ -52,9 +61,9 @@
       "category": "Data Science",
       "description": "Master pandas, numpy, and matplotlib for data analysis.",
       "tutorId": "google_456",
-      "tutorName": "Bob Smith",
+      "tutorName": "Petter Muturi",
       "tutorPicture": "https://i.pravatar.cc/150?u=bob",
-      "price": 30,
+      "price": 30000,
       "availability": "open",
       "image": "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=800&q=80"
     },
@@ -64,9 +73,9 @@
       "category": "Design",
       "description": "Learn color theory, typography, and Figma prototyping.",
       "tutorId": "google_123",
-      "tutorName": "Alice Johnson",
+      "tutorName": "Kelvin Murithi",
       "tutorPicture": "https://i.pravatar.cc/150?u=alice",
-      "price": 20,
+      "price": 20000,
       "availability": "closed",
       "image": "https://images.unsplash.com/photo-1561070791-2526d30994b5?w=800&q=80"
     },
@@ -76,9 +85,9 @@
       "category": "Backend",
       "description": "Build RESTful APIs and server-side applications with Node.js.",
       "tutorId": "google_456",
-      "tutorName": "Bob Smith",
+      "tutorName": "Petter Muturi",
       "tutorPicture": "https://i.pravatar.cc/150?u=bob",
-      "price": 28,
+      "price": 28000,
       "availability": "open",
       "image": "https://images.unsplash.com/photo-1627398242454-45a1465c2479?w=800&q=80"
     },
@@ -88,9 +97,9 @@
       "category": "AI/ML",
       "description": "Introduction to supervised and unsupervised learning algorithms.",
       "tutorId": "google_123",
-      "tutorName": "Alice Johnson",
+      "tutorName": "Kelvin Murithi",
       "tutorPicture": "https://i.pravatar.cc/150?u=alice",
-      "price": 35,
+      "price": 35000,
       "availability": "open",
       "image": "https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?w=800&q=80"
     },
@@ -98,7 +107,7 @@
       "title": "Javascript",
       "category": "Frontend",
       "description": "90% sure",
-      "price": 12,
+      "price": 12000,
       "availability": "open",
       "image": "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=800&q=80",
       "tutorId": "4oC_huG4fxw",
@@ -110,7 +119,7 @@
       "title": "Python",
       "category": "Backend",
       "description": "its good",
-      "price": 24,
+      "price": 24000,
       "availability": "open",
       "image": "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=800&q=80",
       "tutorId": "7OGY55Q0_JM",
@@ -119,16 +128,52 @@
       "id": "HygzyeEGVZM"
     },
     {
-      "title": "Javascript",
+      "title": "Python",
       "category": "Frontend",
-      "description": "hard",
-      "price": 30,
+      "description": "It is eassy to learn",
+      "price": 25000,
       "availability": "open",
       "image": "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=800&q=80",
       "tutorId": "7OGY55Q0_JM",
       "tutorName": "Najib Mahmud",
       "tutorPicture": null,
-      "id": "eEs7fxEpldA"
+      "id": "sfVUlhxkHng"
+    },
+    {
+      "title": "React",
+      "category": "Frontend",
+      "description": "Just focus",
+      "price": 30000,
+      "availability": "open",
+      "image": "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=800&q=80",
+      "tutorId": "7OGY55Q0_JM",
+      "tutorName": "Najib Mahmud",
+      "tutorPicture": null,
+      "id": "yV11s6UkCWQ"
+    },
+    {
+      "title": "HTML,CSS",
+      "category": "Frontend",
+      "description": "For beginners",
+      "price": 40000,
+      "availability": "open",
+      "image": "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=800&q=80",
+      "tutorId": "7OGY55Q0_JM",
+      "tutorName": "Najib Mahmud",
+      "tutorPicture": null,
+      "id": "LYiOG8H13Jc"
+    },
+    {
+      "title": "Python",
+      "category": "Frontend",
+      "description": "Eassy to learn",
+      "price": 35000,
+      "availability": "open",
+      "image": "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=800&q=80",
+      "tutorId": "7OGY55Q0_JM",
+      "tutorName": "Najib Mahmud",
+      "tutorPicture": null,
+      "id": "eCFnMtwoYlo"
     }
   ],
   "sessions": [
@@ -137,9 +182,9 @@
       "skillId": "1",
       "skillTitle": "React Fundamentals",
       "tutorId": "google_456",
-      "tutorName": "Bob Smith",
+      "tutorName": "Petter Muturi",
       "studentId": "google_123",
-      "studentName": "Alice Johnson",
+      "studentName": "Kelvin Murithi",
       "status": "confirmed",
       "date": "2026-05-20",
       "time": "14:00"
@@ -149,12 +194,36 @@
       "skillId": "3",
       "skillTitle": "UI/UX Design Principles",
       "tutorId": "google_123",
-      "tutorName": "Alice Johnson",
+      "tutorName": "Kelvin Murithi",
       "studentId": "google_456",
-      "studentName": "Bob Smith",
+      "studentName": "Petter Muturi",
       "status": "pending",
       "date": "2026-05-22",
       "time": "10:00"
+    },
+    {
+      "skillId": "1",
+      "skillTitle": "React Fundamentals",
+      "tutorId": "google_456",
+      "tutorName": "Petter Muturi",
+      "studentId": "7OGY55Q0_JM",
+      "studentName": "Najib Mahmud",
+      "status": "pending",
+      "date": "2026-05-16",
+      "time": "10:00",
+      "id": "cvJKj2jyaFk"
+    },
+    {
+      "skillId": "2",
+      "skillTitle": "Python for Data Science",
+      "tutorId": "google_456",
+      "tutorName": "Petter Muturi",
+      "studentId": "7OGY55Q0_JM",
+      "studentName": "Najib Mahmud",
+      "status": "pending",
+      "date": "2026-05-16",
+      "time": "10:00",
+      "id": "mAn1SvrSyNI"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"

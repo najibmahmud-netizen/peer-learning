@@ -69,7 +69,7 @@ export default function Explore() {
               <button
                 key={cat}
                 onClick={() => setSelectedCategory(cat)}
-                className={`px-3 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap transition-colors ${
+                className={`px-3 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap transition-colors ksh{
                   selectedCategory === cat
                     ? 'bg-primary-600 text-white'
                     : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
@@ -84,8 +84,8 @@ export default function Explore() {
 
       <p className="text-sm text-gray-500 mb-6">
         Showing {filteredSkills.length} {filteredSkills.length === 1 ? 'skill' : 'skills'}
-        {selectedCategory !== 'All' && ` in ${selectedCategory}`}
-        {searchTerm && ` matching "${searchTerm}"`}
+        {selectedCategory !== 'All' && ` in ksh{selectedCategory}`}
+        {searchTerm && ` matching "ksh{searchTerm}"`}
       </p>
 
       {filteredSkills.length === 0 ? (
@@ -131,13 +131,13 @@ export default function Explore() {
                 <p className="text-gray-600 text-sm line-clamp-2 mb-4">{skill.description}</p>
 
                 <div className="flex items-center justify-between">
-                  {/* PROFILE PHOTO REMOVED */}
+                 
                   <span className="text-sm text-gray-700 font-medium">
                     {skill.tutorName}
                   </span>
 
                   <div className="flex items-center gap-1 text-primary-600 font-semibold">
-                    <span className="text-sm">${skill.price}</span>
+                    <span className="text-sm">ksh{skill.price}</span>
                     <span className="text-xs text-gray-400">/hr</span>
                   </div>
                 </div>

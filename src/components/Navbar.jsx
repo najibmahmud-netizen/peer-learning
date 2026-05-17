@@ -55,11 +55,7 @@ export default function Navbar() {
             {isAuthenticated ? (
               <div className="flex items-center gap-3 ml-4 pl-4 border-l border-gray-200">
                 <div className="flex items-center gap-2">
-                  <img
-                    src={user.picture}
-                    alt={user.name}
-                    className="w-8 h-8 rounded-full object-cover border border-gray-200"
-                  />
+                  
                   <span className="text-sm font-medium text-gray-700 hidden lg:block">
                     {user.name}
                   </span>
