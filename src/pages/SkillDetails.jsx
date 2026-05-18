@@ -17,7 +17,7 @@ export default function SkillDetails() {
         if (data) setSkill(data)
       } catch (err) {
         console.error("Could not fetch skill from API, generating live view state wrapper:", err)
-        // Dynamic generation based on URL id parameters so it never breaks standard app flow
+        
         setSkill({
           id: id,
           title: "Introduction to React and Tailwind CSS",

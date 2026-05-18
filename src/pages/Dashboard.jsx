@@ -1,16 +1,16 @@
 import { useEffect, useState } from 'react'
 import { useUser } from '../context/UserContext'
 import { fetchAllSkills, createSkill } from "../services/skillService"
-import { getBookings } from '../utils/sessionManager' // Import memory tracker
+import { getBookings } from '../utils/sessionManager' 
 
 export default function Dashboard() {
   const { user } = useUser()
   const [mySkills, setMySkills] = useState([])
-  const [myBookings, setMyBookings] = useState([]) // New state for dynamic bookings tracking
+  const [myBookings, setMyBookings] = useState([]) 
   const [loading, setLoading] = useState(true)
   const [activeTab, setActiveTab] = useState('teach')
   
-  // Keep your existing Form States here...
+  
   const [showForm, setShowForm] = useState(false)
   const [title, setTitle] = useState('')
   const [category, setCategory] = useState('Frontend')
@@ -25,7 +25,7 @@ export default function Dashboard() {
         setMySkills(filtered)
       }
       
-      // Load active session bookings instantly from runtime memory
+     
       const activeBookings = getBookings()
       setMyBookings(activeBookings)
 
@@ -69,7 +69,7 @@ export default function Dashboard() {
 
   return (
     <div className="max-w-7xl mx-auto px-6 py-10">
-      {/* Top Header Control Panel */}
+      
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">My Dashboard</h1>
@@ -106,7 +106,7 @@ export default function Dashboard() {
         </form>
       )}
 
-      {/* Navigation Tabs */}
+     
       <div className="flex gap-3 border-b border-gray-100 pb-4 mb-6">
         <button
           onClick={() => setActiveTab('teach')}
@@ -126,7 +126,7 @@ export default function Dashboard() {
         </button>
       </div>
 
-      {/* Tab Panels */}
+     
       {activeTab === 'teach' ? (
         mySkills.length === 0 ? (
           <div className="py-6 text-sm text-gray-400">No skills created yet.</div>
@@ -145,7 +145,7 @@ export default function Dashboard() {
           </div>
         )
       ) : (
-        /* Render Bookings clean when activeTab is 'booked' */
+        
         myBookings.length === 0 ? (
           <div className="py-6 text-sm text-gray-400">No active session schedules found.</div>
         ) : (

@@ -54,7 +54,7 @@ export default function Login() {
         setSuccess('Logged in successfully!')
       }
       
-      // Update our global user state context and redirect
+     
       login(user)
       navigate('/dashboard')
     } catch (err) {

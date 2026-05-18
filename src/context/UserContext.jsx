@@ -9,7 +9,7 @@ import {
 const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
-  // Grab the data instantly inline on initial engine load instead of waiting for useEffect
+  
   const [user, setUser] = useState(() => {
     const sessionUser = getSessionUser();
     return sessionUser && isSessionValid() ? sessionUser : null;
@@ -40,7 +40,7 @@ export const UserProvider = ({ children }) => {
         logout,
         updateUser,
         isAuthenticated: !!user,
-        loading: false, // Since memory hydration is instantaneous, loading is immediately false
+        loading: false, 
       }}
     >
       {children}

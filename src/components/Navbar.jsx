@@ -22,7 +22,7 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-6">
         <div className="flex justify-between h-16 items-center">
           
-          {/* Logo Brand Text */}
+         
           <div className="flex items-center">
             <Link to="/" className="text-xl font-bold tracking-tight">
               <span className="text-gray-900">Moringa</span>
@@ -30,7 +30,7 @@ export default function Navbar() {
             </Link>
           </div>
 
-          {/* Desktop Navigation Links */}
+         
           <div className="hidden md:flex items-center gap-6">
             {navLinks.map((link) => (
               <Link
@@ -69,7 +69,7 @@ export default function Navbar() {
             )}
           </div>
 
-          {/* Mobile Hamburger Button Text */}
+         
           <div className="flex items-center md:hidden">
             <button
               onClick={() => setMobileOpen(!mobileOpen)}
@@ -81,7 +81,7 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* Mobile Drawer */}
+    
       {mobileOpen && (
         <div className="md:hidden border-t border-gray-100 bg-white">
           <div className="px-6 py-4 space-y-3 flex flex-col text-sm font-medium text-gray-600">

@@ -47,7 +47,7 @@ export default function Explore() {
 
   return (
     <div className="max-w-7xl mx-auto px-6 py-8">
-      {/* Search and Category Filter Container */}
+      
       <div className="bg-white border border-gray-200 rounded-xl p-4 mb-6 shadow-sm">
         <div className="flex flex-col gap-4">
           <input
@@ -57,7 +57,7 @@ export default function Explore() {
             className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 transition-colors"
           />
 
-          {/* Horizontal Category Pill Filters */}
+          
           <div className="flex gap-2 overflow-x-auto pb-1 text-xs font-medium text-gray-500">
             {categories.map((cat) => (
               <button

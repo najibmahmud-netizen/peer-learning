@@ -1,6 +1,4 @@
-// src/utils/sessionManager.js
 
-// We maintain an in-memory variable instead of using localStorage, sessionStorage, or cookies.
 let _memorySession = null;
 
 export const createSession = (user, token = null) => {

@@ -78,12 +78,12 @@ export const createSkill = async (skillData) => {
       status: skillData.status || "Available",
       imageUrl: skillData.imageUrl || "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=500&auto=format&fit=crop&q=60"
     }
-    _memorySkills.unshift(newSkill) // Pushes to the front of the list so it appears instantly on the UI
+    _memorySkills.unshift(newSkill) 
     return newSkill
   }
 }
 
-// Clean abstraction layer matching your layout requirements
+
 export const fetchAllSkills = async () => {
   return await getSkills()
 }
